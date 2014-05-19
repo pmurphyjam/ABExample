@@ -57,6 +57,9 @@
 		711BF2E519298F51002D2514 /* Contacts.db in Resources */ = {isa = PBXBuildFile; fileRef = 711BF2E419298F51002D2514 /* Contacts.db */; };
 		711BF2E819298FF1002D2514 /* AppConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 711BF2E719298FF1002D2514 /* AppConstants.m */; };
 		711BF2EB192990B6002D2514 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 711BF2EA192990B6002D2514 /* SystemConfiguration.framework */; };
+		711BF2EF1929ABBE002D2514 /* ContactConvertor.m in Sources */ = {isa = PBXBuildFile; fileRef = 711BF2EE1929ABBE002D2514 /* ContactConvertor.m */; };
+		711BF2F21929ABDF002D2514 /* ContactModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 711BF2F11929ABDF002D2514 /* ContactModel.m */; };
+		711BF2F51929AC07002D2514 /* ContactObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 711BF2F41929AC07002D2514 /* ContactObject.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -152,6 +155,12 @@
 		711BF2E619298FF1002D2514 /* AppConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppConstants.h; path = ViewControllers/AppConstants.h; sourceTree = "<group>"; };
 		711BF2E719298FF1002D2514 /* AppConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppConstants.m; path = ViewControllers/AppConstants.m; sourceTree = "<group>"; };
 		711BF2EA192990B6002D2514 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		711BF2ED1929ABBE002D2514 /* ContactConvertor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ContactConvertor.h; path = ViewControllers/ContactConvertor.h; sourceTree = "<group>"; };
+		711BF2EE1929ABBE002D2514 /* ContactConvertor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ContactConvertor.m; path = ViewControllers/ContactConvertor.m; sourceTree = "<group>"; };
+		711BF2F01929ABDF002D2514 /* ContactModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ContactModel.h; path = ViewControllers/ContactModel.h; sourceTree = "<group>"; };
+		711BF2F11929ABDF002D2514 /* ContactModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ContactModel.m; path = ViewControllers/ContactModel.m; sourceTree = "<group>"; };
+		711BF2F31929AC07002D2514 /* ContactObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ContactObject.h; path = ViewControllers/ContactObject.h; sourceTree = "<group>"; };
+		711BF2F41929AC07002D2514 /* ContactObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ContactObject.m; path = ViewControllers/ContactObject.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -377,6 +386,10 @@
 		711BF28319298588002D2514 /* DataBase Models */ = {
 			isa = PBXGroup;
 			children = (
+				711BF2ED1929ABBE002D2514 /* ContactConvertor.h */,
+				711BF2EE1929ABBE002D2514 /* ContactConvertor.m */,
+				711BF2F01929ABDF002D2514 /* ContactModel.h */,
+				711BF2F11929ABDF002D2514 /* ContactModel.m */,
 				711BF28419298593002D2514 /* Objects */,
 			);
 			name = "DataBase Models";
@@ -385,6 +398,8 @@
 		711BF28419298593002D2514 /* Objects */ = {
 			isa = PBXGroup;
 			children = (
+				711BF2F31929AC07002D2514 /* ContactObject.h */,
+				711BF2F41929AC07002D2514 /* ContactObject.m */,
 			);
 			name = Objects;
 			sourceTree = "<group>";
@@ -533,7 +548,9 @@
 				711BF2DB192986EB002D2514 /* DeviceUtils.m in Sources */,
 				711BF28D192985C2002D2514 /* ABContactsHelper.m in Sources */,
 				711BF29B192985ED002D2514 /* AppAnalytics.m in Sources */,
+				711BF2EF1929ABBE002D2514 /* ContactConvertor.m in Sources */,
 				711BF25619298172002D2514 /* AppDelegate.m in Sources */,
+				711BF2F21929ABDF002D2514 /* ContactModel.m in Sources */,
 				711BF2BA192986AA002D2514 /* NSString+Category.m in Sources */,
 				711BF2BD192986CC002D2514 /* AppViewController.m in Sources */,
 				711BF2DC192986EB002D2514 /* GTMStackTrace.m in Sources */,
@@ -543,6 +560,7 @@
 				711BF2E819298FF1002D2514 /* AppConstants.m in Sources */,
 				711BF29C192985ED002D2514 /* AppAnalyticsTrackerVCtrl.m in Sources */,
 				711BF28E192985C2002D2514 /* ABGroup.m in Sources */,
+				711BF2F51929AC07002D2514 /* ContactObject.m in Sources */,
 				711BF2D7192986EB002D2514 /* AppDebugLog.m in Sources */,
 				711BF25219298172002D2514 /* main.m in Sources */,
 				711BF2D9192986EB002D2514 /* AppQueryParameter.m in Sources */,
