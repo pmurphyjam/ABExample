@@ -53,6 +53,8 @@
 		711BF2DC192986EB002D2514 /* GTMStackTrace.m in Sources */ = {isa = PBXBuildFile; fileRef = 711BF2CF192986EB002D2514 /* GTMStackTrace.m */; };
 		711BF2DD192986EB002D2514 /* SettingsModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 711BF2D1192986EB002D2514 /* SettingsModel.m */; };
 		711BF2DE192986EB002D2514 /* UTCDate.m in Sources */ = {isa = PBXBuildFile; fileRef = 711BF2D3192986EB002D2514 /* UTCDate.m */; };
+		711BF2E019298EB0002D2514 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 711BF2DF19298EB0002D2514 /* README.md */; };
+		711BF2E219298EB9002D2514 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 711BF2E119298EB9002D2514 /* README.md */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -144,6 +146,8 @@
 		711BF2D1192986EB002D2514 /* SettingsModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SettingsModel.m; path = AppIOS/App/SettingsModel.m; sourceTree = SOURCE_ROOT; };
 		711BF2D2192986EB002D2514 /* UTCDate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UTCDate.h; path = AppIOS/App/UTCDate.h; sourceTree = SOURCE_ROOT; };
 		711BF2D3192986EB002D2514 /* UTCDate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UTCDate.m; path = AppIOS/App/UTCDate.m; sourceTree = SOURCE_ROOT; };
+		711BF2DF19298EB0002D2514 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = README.md; path = AppIOS/README.md; sourceTree = SOURCE_ROOT; };
+		711BF2E119298EB9002D2514 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -357,6 +361,8 @@
 			isa = PBXGroup;
 			children = (
 				711BF28F192985D7002D2514 /* README.md */,
+				711BF2DF19298EB0002D2514 /* README.md */,
+				711BF2E119298EB9002D2514 /* README.md */,
 			);
 			name = ReadMe;
 			sourceTree = "<group>";
@@ -459,8 +465,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				711BF2E019298EB0002D2514 /* README.md in Resources */,
 				711BF25C19298172002D2514 /* Main_iPad.storyboard in Resources */,
 				711BF26119298172002D2514 /* Images.xcassets in Resources */,
+				711BF2E219298EB9002D2514 /* README.md in Resources */,
 				711BF290192985D7002D2514 /* README.md in Resources */,
 				711BF25919298172002D2514 /* Main_iPhone.storyboard in Resources */,
 				711BF25019298172002D2514 /* InfoPlist.strings in Resources */,
