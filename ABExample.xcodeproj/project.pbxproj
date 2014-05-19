@@ -56,6 +56,7 @@
 		711BF2E219298EB9002D2514 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 711BF2E119298EB9002D2514 /* README.md */; };
 		711BF2E519298F51002D2514 /* Contacts.db in Resources */ = {isa = PBXBuildFile; fileRef = 711BF2E419298F51002D2514 /* Contacts.db */; };
 		711BF2E819298FF1002D2514 /* AppConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 711BF2E719298FF1002D2514 /* AppConstants.m */; };
+		711BF2EB192990B6002D2514 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 711BF2EA192990B6002D2514 /* SystemConfiguration.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -150,6 +151,7 @@
 		711BF2E419298F51002D2514 /* Contacts.db */ = {isa = PBXFileReference; lastKnownFileType = file; name = Contacts.db; path = ABExample/Resources/Contacts.db; sourceTree = "<group>"; };
 		711BF2E619298FF1002D2514 /* AppConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppConstants.h; path = ViewControllers/AppConstants.h; sourceTree = "<group>"; };
 		711BF2E719298FF1002D2514 /* AppConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppConstants.m; path = ViewControllers/AppConstants.m; sourceTree = "<group>"; };
+		711BF2EA192990B6002D2514 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -157,6 +159,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				711BF2EB192990B6002D2514 /* SystemConfiguration.framework in Frameworks */,
 				711BF2AE1929867B002D2514 /* Security.framework in Frameworks */,
 				711BF2A61929865B002D2514 /* AddressBook.framework in Frameworks */,
 				711BF2A71929865B002D2514 /* AddressBookUI.framework in Frameworks */,
@@ -207,6 +210,7 @@
 		711BF24419298172002D2514 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				711BF2EA192990B6002D2514 /* SystemConfiguration.framework */,
 				711BF2AD1929867B002D2514 /* Security.framework */,
 				711BF29F1929865B002D2514 /* AddressBook.framework */,
 				711BF2A01929865B002D2514 /* AddressBookUI.framework */,
@@ -410,6 +414,7 @@
 			buildPhases = (
 				711BF23E19298172002D2514 /* Sources */,
 				711BF23F19298172002D2514 /* Frameworks */,
+				711BF2EC192990C8002D2514 /* Run Script */,
 				711BF24019298172002D2514 /* Resources */,
 			);
 			buildRules = (
@@ -497,6 +502,23 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		711BF2EC192990C8002D2514 /* Run Script */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Run Script";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "git_version=$(git log -1 --format=\"%h\")\ngit_branch=$(git symbolic-ref --short -q HEAD)\ngit_tag=$(git describe --tags --exact-match 2>/dev/null)\n\nbuild_time=$(date \"+%m-%d-%Y %r\")\ngit_branch_or_tag=\"${git_branch:-${git_tag}}\"\n\ninfo_plist=\"${BUILT_PRODUCTS_DIR}/${EXECUTABLE_FOLDER_PATH}/Info.plist\"\n#/usr/libexec/PlistBuddy -c \"Set :GitCommit '${git_branch_or_tag}-${git_version}'\" \"${info_plist}\"\n#/usr/libexec/PlistBuddy -c \"Set :BuildDate '${build_time}'\" \"${info_plist}\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		711BF23E19298172002D2514 /* Sources */ = {
@@ -661,6 +683,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ABExample/ABExample-Prefix.pch";
 				INFOPLIST_FILE = "ABExample/ABExample-Info.plist";
@@ -678,6 +704,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ABExample/ABExample-Prefix.pch";
 				INFOPLIST_FILE = "ABExample/ABExample-Info.plist";
