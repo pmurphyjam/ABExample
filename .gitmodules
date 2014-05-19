@@ -1,3 +1,6 @@
 [submodule "AppIOS"]
 	path = AppIOS
 	url = https://github.com/pmurphyjam/AppIOS.git
+[submodule "ABContacts"]
+	path = ABContacts
+	url = https://github.com/pmurphyjam/ABContacts.git
