@@ -60,6 +60,8 @@
 		711BF2EF1929ABBE002D2514 /* ContactConvertor.m in Sources */ = {isa = PBXBuildFile; fileRef = 711BF2EE1929ABBE002D2514 /* ContactConvertor.m */; };
 		711BF2F21929ABDF002D2514 /* ContactModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 711BF2F11929ABDF002D2514 /* ContactModel.m */; };
 		711BF2F51929AC07002D2514 /* ContactObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 711BF2F41929AC07002D2514 /* ContactObject.m */; };
+		711BF2F81929B7C0002D2514 /* ContactsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 711BF2F71929B7C0002D2514 /* ContactsTableViewController.m */; };
+		711BF2FB1929B81F002D2514 /* ContactDetailTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 711BF2FA1929B81F002D2514 /* ContactDetailTableViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -161,6 +163,10 @@
 		711BF2F11929ABDF002D2514 /* ContactModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ContactModel.m; path = ViewControllers/ContactModel.m; sourceTree = "<group>"; };
 		711BF2F31929AC07002D2514 /* ContactObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ContactObject.h; path = ViewControllers/ContactObject.h; sourceTree = "<group>"; };
 		711BF2F41929AC07002D2514 /* ContactObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ContactObject.m; path = ViewControllers/ContactObject.m; sourceTree = "<group>"; };
+		711BF2F61929B7C0002D2514 /* ContactsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ContactsTableViewController.h; path = ViewControllers/ContactsTableViewController.h; sourceTree = "<group>"; };
+		711BF2F71929B7C0002D2514 /* ContactsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ContactsTableViewController.m; path = ViewControllers/ContactsTableViewController.m; sourceTree = "<group>"; };
+		711BF2F91929B81F002D2514 /* ContactDetailTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ContactDetailTableViewController.h; path = ViewControllers/ContactDetailTableViewController.h; sourceTree = "<group>"; };
+		711BF2FA1929B81F002D2514 /* ContactDetailTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ContactDetailTableViewController.m; path = ViewControllers/ContactDetailTableViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -407,6 +413,10 @@
 		711BF285192985A2002D2514 /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
+				711BF2F61929B7C0002D2514 /* ContactsTableViewController.h */,
+				711BF2F71929B7C0002D2514 /* ContactsTableViewController.m */,
+				711BF2F91929B81F002D2514 /* ContactDetailTableViewController.h */,
+				711BF2FA1929B81F002D2514 /* ContactDetailTableViewController.m */,
 			);
 			name = ViewControllers;
 			sourceTree = "<group>";
@@ -554,6 +564,7 @@
 				711BF2BA192986AA002D2514 /* NSString+Category.m in Sources */,
 				711BF2BD192986CC002D2514 /* AppViewController.m in Sources */,
 				711BF2DC192986EB002D2514 /* GTMStackTrace.m in Sources */,
+				711BF2FB1929B81F002D2514 /* ContactDetailTableViewController.m in Sources */,
 				711BF2D4192986EB002D2514 /* AppConnectionOperation.m in Sources */,
 				711BF2DE192986EB002D2514 /* UTCDate.m in Sources */,
 				711BF2B9192986AA002D2514 /* NSException+Category.m in Sources */,
@@ -562,6 +573,7 @@
 				711BF28E192985C2002D2514 /* ABGroup.m in Sources */,
 				711BF2F51929AC07002D2514 /* ContactObject.m in Sources */,
 				711BF2D7192986EB002D2514 /* AppDebugLog.m in Sources */,
+				711BF2F81929B7C0002D2514 /* ContactsTableViewController.m in Sources */,
 				711BF25219298172002D2514 /* main.m in Sources */,
 				711BF2D9192986EB002D2514 /* AppQueryParameter.m in Sources */,
 				711BF2DD192986EB002D2514 /* SettingsModel.m in Sources */,
