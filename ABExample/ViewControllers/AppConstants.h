@@ -45,7 +45,7 @@
 #    define NSQLog(...)
 #endif
 
-//#define DEBUGDB
+#define DEBUGDB
 #ifdef DEBUGDB
 #    define NSDBLog(...) NSLog(__VA_ARGS__)
 #else
