@@ -21,6 +21,8 @@
 #define EN_KEY                        @"3FEF5CA851E7B34E5670B023F08503493D451A05CE4D2EDC6833F666A8086BEC"
 #define SQLITE_CIPHER_VERSION         3008000
 
+#define CONTACT_IMAGE_SIZE            CGSizeMake(120,120)
+
 #define GET_LAST_INSERTED_IDENTITY 1
 #define GET_AND_SAVE_LAST_INSERTED_IDENTITY 2
 #define RETRIEVE_SAVED_IDENTITY 3
@@ -45,11 +47,18 @@
 #    define NSQLog(...)
 #endif
 
-#define DEBUGDB
+//#define DEBUGDB
 #ifdef DEBUGDB
 #    define NSDBLog(...) NSLog(__VA_ARGS__)
 #else
 #    define NSDBLog(...)
+#endif
+
+#define DEBUGCON
+#ifdef DEBUGCON
+#    define NCONLog(...) NSLog(__VA_ARGS__)
+#else
+#    define NCONLog(...)
 #endif
 
 //#define DEBUGCR

@@ -14,6 +14,8 @@
 #import "NSDictionary+JSONCategory.h"
 #import "DeviceUtils.h"
 #import "AppDebugLog.h"
+#import "ABContactsHelper.h"
+#import "ContactModel.h"
 #import <CommonCrypto/CommonDigest.h>
 #import <AdSupport/AdSupport.h>
 
@@ -34,6 +36,7 @@
     [SettingsModel setDS1:[AppManager getSomeDSfromDate:[NSDate date]]];
     [SettingsModel setLoginState:YES];
     [SettingsModel setUserName:@"John Smith"];
+    [SettingsModel setCountry:@"USA"];
     [AppManager InitializeAppManager];
     //Open the Database. Typically you wouldn't do this until a user has enter a password first
     //In the login or signin views. Never open the DB with Encryption until you have a password present.
@@ -43,6 +46,14 @@
     //Upload CrashData if we have some
     if([SettingsModel getLoginState])
     {
+        //[SettingsModel setTotalUserContacts:0];
+        BOOL contactAccessGranted = [ABContactsHelper getAccessToContacts];
+        BOOL updateContacts = [ContactModel updateContactsRequired];
+        if(updateContacts && contactAccessGranted && [SettingsModel getProcessingContacts] == NO)
+        {
+            [ContactModel getUserContactsFromAddressBook];
+        }
+
         //If the App crashed it will come here, and see if there is any Stack Traces to upload to the Server
         BOOL crashDataExists = [AppManager crashDataExists];
         if(crashDataExists)

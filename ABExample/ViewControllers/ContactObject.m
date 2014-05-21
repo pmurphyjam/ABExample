@@ -14,7 +14,7 @@
 
 - (NSString*)description
 {
-	return [NSString stringWithFormat:@"ContactObj \r: accountID = %@ \r: contactID = %@ \r: firstName = %@ \r: lastName = %@ \r: emailAddress = %@ \r: phoneNumber = %@ \r: phoneHash = %@ \r: emailHash = %@ \r: birthDate = %@ \r: modificationDate = %@ \r: company = %@ \r: address = %@ \r: city = %@ \r: state = %@ \r: userThumbnail[%d] ",self.accountID,self.contactID,self.firstName,self.lastName,self.emailAddress,self.phoneNumber,self.phoneHash,self.emailHash,self.birthDate,self.modificationDate,self.company,self.address,self.city,self.state,[self.userThumbnail length]];
+	return [NSString stringWithFormat:@"ContactObj \r: accountID = %@ \r: contactID = %@ \r: firstName = %@ \r: lastName = %@ \r: emailAddress = %@ \r: phoneNumber = %@ \r: phoneHash = %@ \r: emailHash = %@ \r: nameHash = %@ \r: birthDate = %@ \r: modificationDate = %@ \r: company = %@ \r: address = %@ \r: city = %@ \r: state = %@ \r: userThumbnail[%d] ",self.accountID,self.contactID,self.firstName,self.lastName,self.emailAddress,self.phoneNumber,self.phoneHash,self.emailHash,self.nameHash,self.birthDate,self.modificationDate,self.company,self.address,self.city,self.state,[self.userThumbnail length]];
 }
 
 @end

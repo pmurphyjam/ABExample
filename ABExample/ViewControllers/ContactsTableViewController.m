@@ -7,111 +7,209 @@
 //
 
 #import "ContactsTableViewController.h"
+#import "ContactTableViewCell.h"
+#import "ContactDetailTableViewController.h"
+#import "AppAnalytics.h"
+#import "AppManager.h"
+#import "ContactModel.h"
+#import "ContactObject.h"
+#import "AppDebugLog.h"
+#import "SettingsModel.h"
 
 @interface ContactsTableViewController ()
 
+@property (nonatomic,strong) NSMutableArray *contactArray;
+@property(nonatomic,strong) IBOutlet UITableView *contactsTable;
+
 @end
+
 
 @implementation ContactsTableViewController
 
-- (id)initWithStyle:(UITableViewStyle)style
-{
-    self = [super initWithStyle:style];
-    if (self) {
-        // Custom initialization
-    }
-    return self;
-}
+@synthesize contactsTable;
+@synthesize contactArray;
+
+#define DEBUG
+#import "AppConstants.h"
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    NDLog(@"ContactsVCtrl: viewDidLoad ");
+    contactArray= [[NSMutableArray alloc] init];
     
-    // Uncomment the following line to preserve selection between presentations.
-    // self.clearsSelectionOnViewWillAppear = NO;
-    
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
 
-- (void)didReceiveMemoryWarning
+-(void)viewWillAppear:(BOOL)animated
 {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+    [super viewWillAppear:animated];
+    NSMutableDictionary *event =
+    [[GAIDictionaryBuilder createEventWithCategory:@"ContactsVCtrl"
+                                            action:@"WillAppear"
+                                             label:[SettingsModel getUserName]
+                                             value:nil] build];
+    [[AppAnalytics sharedInstance].defaultTracker send:event];
+    
+    [self populateContacts:YES];
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+}
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [super viewDidDisappear:animated];
+}
+
+-(void)populateContacts:(BOOL)reload
+{
+    contactArray= [ContactModel getContactsForView];
+    if(reload)
+        [contactsTable reloadData];
+    NDLog(@"ContactsVCtrl: contactArray[%d] = %@",[contactArray count],contactArray);
+}
+
+
+-(void) prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if([segue.identifier isEqualToString:@"AddContact"])
+    {
+        UINavigationController *navigationController = segue.destinationViewController;
+        ContactDetailTableViewController *contactDetailTableViewController = [[navigationController viewControllers] objectAtIndex:0];
+        [contactDetailTableViewController setDelegate:(id)self];
+    }
+    else if([segue.identifier isEqualToString:@"EditContact"])
+    {
+        UINavigationController *navigationController = segue.destinationViewController;
+        ContactDetailTableViewController *contactDetailTableViewController = [[navigationController viewControllers] objectAtIndex:0];
+        [contactDetailTableViewController setDelegate:(id)self];
+        
+        NSIndexPath *indexPath = [self.tableView indexPathForCell:sender];
+        ContactObject *contact = [contactArray objectAtIndex:[indexPath row]];
+        contactDetailTableViewController.contactToEdit = contact;
+    }
+}
+
+#pragma mark - addContact Delegates
+
+-(void) addContactViewControllerDidCancel:(ContactDetailTableViewController *)controller
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
+    [contactsTable reloadData];
+}
+
+-(void) addContactViewController:(ContactDetailTableViewController *)controller didEditContact:(ContactObject*)contact
+{
+    [ContactModel updateContact:contact];
+    [self populateContacts:YES];
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+-(void) addContactViewController:(ContactDetailTableViewController *)controller didAddContact:(ContactObject*)contact
+{
+    [ContactModel insertContact:contact];
+    [self populateContacts:YES];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    // Return the number of sections.
-    return 0;
+    return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    // Return the number of rows in the section.
-    return 0;
+    return [contactArray count];
 }
 
-/*
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    [self performSegueWithIdentifier:@"EditContact" sender:nil];
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return 221.0;
+}
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:<#@"reuseIdentifier"#> forIndexPath:indexPath];
-    
-    // Configure the cell...
-    
-    return cell;
-}
-*/
+    if (tableView == contactsTable)
+    {
+        static NSString *CellIdentifier = @"ContactTableViewCell";
+        ContactTableViewCell *cell = (ContactTableViewCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+        if (cell == nil)
+        {
+            UINib* customCellNib = [UINib nibWithNibName:@"ContactTableViewCell" bundle:nil];
+            [tableView registerNib:customCellNib forCellReuseIdentifier:CellIdentifier];
+            cell = (ContactTableViewCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+        }
+        
+        ContactObject *contactObject = [contactArray objectAtIndex:[indexPath row]];
+        NDLog(@"ContactsVCtrl: cellForRow[%d] : contact = %@",[indexPath row],contactObject);
 
-/*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
-}
-*/
+        [[cell firstName] setText:[contactObject firstName]];
+        [[cell lastName] setText:[contactObject lastName]];
+        [[cell address] setText:[contactObject address]];
+        [[cell city] setText:[contactObject city]];
+        [[cell state] setText:[contactObject state]];
+        [[cell phoneNumber] setText:[contactObject phoneNumber]];
+        [[cell emailAddress] setText:[contactObject emailAddress]];
+        [[cell company] setText:[contactObject company]];
+        [[cell birthDate] setText:[contactObject birthDate]];
 
-/*
-// Override to support editing the table view.
+        return cell;
+    }
+    return nil;
+}
+
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    } else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
+    if (tableView == contactsTable)
+    {
+        if (editingStyle == UITableViewCellEditingStyleDelete)
+        {
+            ContactObject *contact = [contactArray objectAtIndex:[indexPath row]];
+            NDLog(@"ContactsVCtrl: Delete : contact[%ld] = %@",(long)[indexPath row],contact);
+            [ContactModel deleteContact:contact];
+            [self populateContacts:NO];
+            [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObjects:indexPath, nil] withRowAnimation:UITableViewRowAnimationFade];
+        }
+    }
 }
-*/
 
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
+- (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    if (indexPath.row == 0)
+    {
+        return UITableViewCellEditingStyleNone;
+    }
+    else
+    {
+        return UITableViewCellEditingStyleDelete;
+    }
 }
-*/
 
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
+-(NSString *)tableView:(UITableView *)tableView titleForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
+    return @"Delete";
 }
-*/
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+//Keep this last in the file
+- (void)didReceiveMemoryWarning
 {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+    [AppManager currentMemoryConsumption:[NSString stringWithUTF8String:__PRETTY_FUNCTION__]];
+    [AppDebugLog writeDebugData:[NSString stringWithFormat:@"ContactsVCtrl: didReceiveMemoryWarning"]];
+    NSLog(@"ContactsVCtrl: didReceiveMemoryWarning : ERROR");
+    [super didReceiveMemoryWarning];
 }
-*/
-
 @end

@@ -7,111 +7,187 @@
 //
 
 #import "ContactDetailTableViewController.h"
+#import "ContactDetailTableViewCell.h"
+#import "AppAnalytics.h"
+#import "AppManager.h"
+#import "AppDebugLog.h"
+#import "SettingsModel.h"
 
 @interface ContactDetailTableViewController ()
+
+@property (nonatomic,strong) NSMutableDictionary *contactImages;
 
 @end
 
 @implementation ContactDetailTableViewController
 
-- (id)initWithStyle:(UITableViewStyle)style
-{
-    self = [super initWithStyle:style];
-    if (self) {
-        // Custom initialization
-    }
-    return self;
-}
+@synthesize delegate,firstNameTextField,lasttNameTextField,addressTextField,emailAddressTextField,phoneNumberTextField,cityTextField,stateTextField,companyTextField,birthDateTextField,contactToEdit,contactImages;
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-    // Uncomment the following line to preserve selection between presentations.
-    // self.clearsSelectionOnViewWillAppear = NO;
-    
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+    contactImages = [[NSMutableDictionary alloc] init];
+    [firstNameTextField setDelegate:self];
+    [lasttNameTextField setDelegate:self];
+    [addressTextField setDelegate:self];
+    [emailAddressTextField setDelegate:self];
+    [phoneNumberTextField setDelegate:self];
+    [cityTextField setDelegate:self];
+    [stateTextField setDelegate:self];
+    [companyTextField setDelegate:self];
+    [birthDateTextField setDelegate:self];
+
+    if(contactToEdit != nil)
+    {
+        self.title = [NSString stringWithFormat:@"%@ %@",contactToEdit.firstName,contactToEdit.lastName];
+        firstNameTextField.text = contactToEdit.firstName;
+        lasttNameTextField.text = contactToEdit.lastName;
+        addressTextField.text = contactToEdit.address;
+        emailAddressTextField.text = contactToEdit.emailAddress;
+        phoneNumberTextField.text = contactToEdit.phoneNumber;
+        cityTextField.text = contactToEdit.city;
+        stateTextField.text = contactToEdit.state;
+        companyTextField.text = contactToEdit.company;
+        birthDateTextField.text = contactToEdit.birthDate;
+    }
 }
 
+-(void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    NSMutableDictionary *event =
+    [[GAIDictionaryBuilder createEventWithCategory:@"AddContactVCtrl"
+                                            action:@"WillAppear"
+                                             label:[SettingsModel getUserName]
+                                             value:nil] build];
+    [[AppAnalytics sharedInstance].defaultTracker send:event];
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+    return [textField resignFirstResponder];
+}
+
+-(NSString*)getRandomCompanyLogo
+{
+    //These PNG's are in the Companies folder
+    //There never displayed, but it shows how to store an image in the DB
+    NSString *companyLogo = @"Apple.png";
+    int logoInt = (int)arc4random() % 8;
+    if(logoInt == 0)
+        companyLogo = @"Apple.png";
+    else if (logoInt == 1)
+        companyLogo = @"AMD.png";
+    else if (logoInt == 2)
+        companyLogo = @"Intel.png";
+    else if (logoInt == 3)
+        companyLogo = @"Cisco.png";
+    else if (logoInt == 4)
+        companyLogo = @"ChaseBank.png";
+    else if (logoInt == 5)
+        companyLogo = @"Chevron.png";
+    else if (logoInt == 6)
+        companyLogo = @"BofA.png";
+    else if (logoInt == 7)
+        companyLogo = @"WellsFargo.png";
+    else if (logoInt == 8)
+        companyLogo = @"Zynga.png";
+    else
+        companyLogo = @"Apple.png";
+    
+    return companyLogo;
+}
+
+-(IBAction)save:(id)sender
+{
+    if(contactToEdit != nil)
+    {
+        contactToEdit.firstName = firstNameTextField.text;
+        contactToEdit.lastName = lasttNameTextField.text;
+        contactToEdit.address = addressTextField.text;
+        contactToEdit.emailAddress = emailAddressTextField.text;
+        contactToEdit.phoneNumber = phoneNumberTextField.text;
+        contactToEdit.city = cityTextField.text;
+        contactToEdit.state = stateTextField.text;
+        contactToEdit.company = companyTextField.text;
+        contactToEdit.birthDate = birthDateTextField.text;
+        [contactToEdit setUserThumbnail:UIImagePNGRepresentation([UIImage imageNamed:[self getRandomCompanyLogo]])];
+        
+        NSMutableDictionary *event =
+        [[GAIDictionaryBuilder createEventWithCategory:@"ContactDetailVCtrl"
+                                                action:@"EditExistingContact"
+                                                 label:[SettingsModel getUserName]
+                                                 value:nil] build];
+        [[AppAnalytics sharedInstance].defaultTracker send:event];
+        
+        if(![self validate:contactToEdit])
+        {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"Invalid Contact" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+            [alert show];
+            return;
+        }
+        [delegate addContactViewController:self didEditContact:contactToEdit];
+    }
+    else
+    {
+        ContactObject *contact = [[ContactObject alloc] init];
+        contact.firstName = firstNameTextField.text;
+        contact.lastName = lasttNameTextField.text;
+        contact.address = addressTextField.text;
+        contact.emailAddress = emailAddressTextField.text;
+        contact.phoneNumber = phoneNumberTextField.text;
+        contact.city = cityTextField.text;
+        contact.state = stateTextField.text;
+        contact.company = companyTextField.text;
+        contact.birthDate = birthDateTextField.text;
+        [contactToEdit setUserThumbnail:UIImagePNGRepresentation([UIImage imageNamed:[self getRandomCompanyLogo]])];
+        
+        NSMutableDictionary *event =
+        [[GAIDictionaryBuilder createEventWithCategory:@"ContactDetailVCtrl"
+                                                action:@"AddNewContact"
+                                                 label:[SettingsModel getUserName]
+                                                 value:nil] build];
+        [[AppAnalytics sharedInstance].defaultTracker send:event];
+        
+        if(![self validate:contact])
+        {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"Invalid Contact" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+            [alert show];
+            return;
+        }
+        [delegate addContactViewController:self didAddContact:contact];
+    }
+}
+
+-(BOOL)validate:(ContactObject*)contact
+{
+    //Should really check all the fields, but hey it's a demo
+    if(([contact.firstName length] == 0) || ([contact.address length] == 0))
+    {
+        return NO;
+    }
+    
+    return YES;
+}
+
+-(IBAction)cancel:(id)sender
+{
+    NSMutableDictionary *event =
+    [[GAIDictionaryBuilder createEventWithCategory:@"ContactDetailVCtrl"
+                                            action:@"CancelContact"
+                                             label:[SettingsModel getUserName]
+                                             value:nil] build];
+    [[AppAnalytics sharedInstance].defaultTracker send:event];
+    
+    [delegate addContactViewControllerDidCancel:self];
+}
+
+//Keep this last in the file
 - (void)didReceiveMemoryWarning
 {
+    [AppManager currentMemoryConsumption:[NSString stringWithUTF8String:__PRETTY_FUNCTION__]];
+    [AppDebugLog writeDebugData:[NSString stringWithFormat:@"ContactDetailVCtrl : didReceiveMemoryWarning"]];
+    NSLog(@"ContactDetailVCtrl : didReceiveMemoryWarning : ERROR");
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
-
-#pragma mark - Table view data source
-
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
-{
-    // Return the number of sections.
-    return 0;
-}
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
-    // Return the number of rows in the section.
-    return 0;
-}
-
-/*
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:<#@"reuseIdentifier"#> forIndexPath:indexPath];
-    
-    // Configure the cell...
-    
-    return cell;
-}
-*/
-
-/*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
-}
-*/
-
-/*
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    } else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
-}
-*/
-
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
-{
-}
-*/
-
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
-
 @end

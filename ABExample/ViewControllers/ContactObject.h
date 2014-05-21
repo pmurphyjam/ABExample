@@ -18,6 +18,7 @@
 @property (nonatomic,strong) NSString *phoneNumber;
 @property (nonatomic,strong) NSString *phoneHash;
 @property (nonatomic,strong) NSString *emailHash;
+@property (nonatomic,strong) NSString *nameHash;
 @property (nonatomic,strong) NSString *birthDate;
 @property (nonatomic,strong) NSString *modificationDate;
 @property (nonatomic,strong) NSString *company;

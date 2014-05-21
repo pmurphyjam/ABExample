@@ -15,5 +15,7 @@
 +(NSMutableArray*)getContactsForView;
 +(BOOL)updateContact:(ContactObject*)contactObject;
 +(BOOL)deleteContact:(ContactObject*)contactObject;
++(BOOL)updateContactsRequired;
++(BOOL)getUserContactsFromAddressBook;
 
 @end
