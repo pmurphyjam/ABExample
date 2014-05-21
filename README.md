@@ -12,8 +12,10 @@ but they will not be deleted from the users AddressBook. This ABExample will wor
 a large number of Contacts in excess of 20K or more.
 
 Uses ABContact which works with ARC and makes reading the iPhone AddressBook easy.
+Note : If your coping this you will have to pull this library and copy it into the ABExample\ABContacts folder.
 
 Uses AppIOS submodule which has SQLite infrastructure for accessing an SQLite database.
+Note : If your coping this you will have to pull this library and copy it into the ABExample\AppIOS folder.
 
 This App has built in Crash Logs using the NSException+Category which is used in main.m. When a crash 
 occurs the fully symbolicated stack trace will be written into the CrashData table. When the App then
