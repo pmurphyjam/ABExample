@@ -3,7 +3,7 @@
 //  ABExample
 //
 //  Created by Pat Murphy on 5/18/14.
-//  Copyright (c) 2014 Pat Murphy. All rights reserved.
+//  Copyright (c) 2014 Fitamatic All rights reserved.
 //
 //  Info : This just prints out the ContactObject in a pretty format in an NSLog.
 //  It never prints out the companyThumbnail data just it's length.
