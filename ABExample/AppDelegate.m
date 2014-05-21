@@ -43,12 +43,15 @@
     [[AppManager DataAccess] openConnection];
     [self configureAnalytics];
     
-    //Upload CrashData if we have some
+    //Upload CrashData if we have some, and process the users Address Book
     if([SettingsModel getLoginState])
     {
         //[SettingsModel setTotalUserContacts:0];
         BOOL contactAccessGranted = [ABContactsHelper getAccessToContacts];
         BOOL updateContacts = [ContactModel updateContactsRequired];
+        [SettingsModel setProcessingContacts:NO];
+        NSLog(@"AppDel : contactAccessGranted = %@ : updateContacts = %@",contactAccessGranted?@"YES":@"NO",updateContacts?@"YES":@"NO");
+
         if(updateContacts && contactAccessGranted && [SettingsModel getProcessingContacts] == NO)
         {
             [ContactModel getUserContactsFromAddressBook];

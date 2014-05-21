@@ -8,6 +8,9 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ContactsTableViewController : UITableViewController
+@interface ContactsTableViewController : UITableViewController<UISearchBarDelegate,UISearchDisplayDelegate>
+
+@property (nonatomic, strong) IBOutlet UISearchBar *searchBar;
+@property (nonatomic, strong) IBOutlet UISearchDisplayController *searchDisplayController;
 
 @end

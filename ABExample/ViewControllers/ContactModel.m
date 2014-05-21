@@ -19,15 +19,193 @@
 
 #import "AppConstants.h"
 
++(NSDictionary*)insertContactsSQL:(ContactObject*)contactObject
+{
+    NSMutableString *sql = [NSMutableString string];
+	NSMutableArray *parameters = [NSMutableArray array];
+	[sql appendString:@" insert into Contacts (sync_bit,sync_delete,sync_datetime,firstName,lastName,nameHash,emailAddress,emailHash,phoneNumber,phoneHash, accountID,contactID,company,address,city,state,numberOfItems,modificationDate,userThumbnail) values(?,?,?"];
+    [parameters addObject:[NSNumber numberWithBool:YES]];
+    [parameters addObject:[NSNumber numberWithBool:NO]];
+    [parameters addObject:[AppManager UTCDateTime]];
+    
+    //Check for existance first, default to NULL if not present
+    if([[contactObject firstName] length] > 0)
+    {
+        [parameters addObject:[contactObject firstName]];
+        [sql appendString:@",?"];
+    }
+    else
+    {
+        [sql appendString:@",NULL"];
+    }
+    
+    if([[contactObject lastName] length] > 0)
+    {
+        [parameters addObject:[contactObject lastName]];
+        [sql appendString:@",?"];
+    }
+    else
+    {
+        [sql appendString:@",NULL"];
+    }
+    
+    if([[contactObject nameHash] length] > 0)
+    {
+        [parameters addObject:[contactObject nameHash]];
+        [sql appendString:@",?"];
+    }
+    else
+    {
+        [sql appendString:@",NULL"];
+    }
+    
+    if([[contactObject emailAddress] length] > 1)
+    {
+        [parameters addObject:[contactObject emailAddress]];
+        [sql appendString:@",?"];
+    }
+    else
+    {
+        [sql appendString:@",NULL"];
+    }
+    
+    if([[contactObject emailHash] length] > 1)
+    {
+        [parameters addObject:[contactObject emailHash]];
+        [sql appendString:@",?"];
+    }
+    else
+    {
+        [sql appendString:@",NULL"];
+    }
+    
+    if([[contactObject phoneNumber] length] > 1)
+    {
+        [parameters addObject:[contactObject phoneNumber]];
+        [sql appendString:@",?"];
+    }
+    else
+    {
+        [sql appendString:@",NULL"];
+    }
+    
+    if([[contactObject phoneHash] length] > 1)
+    {
+        [parameters addObject:[contactObject phoneHash]];
+        [sql appendString:@",?"];
+    }
+    else
+    {
+        [sql appendString:@",NULL"];
+    }
+    
+    if([contactObject accountID] != nil)
+    {
+        [parameters addObject:[contactObject accountID]];
+        [sql appendString:@",?"];
+    }
+    else
+    {
+        [sql appendString:@",NULL"];
+    }
+    
+    if([[contactObject contactID] length] > 1)
+    {
+        [parameters addObject:[contactObject contactID]];
+        [sql appendString:@",?"];
+    }
+    else
+    {
+        [sql appendString:@",NULL"];
+    }
+    
+    if([[contactObject company] length] > 0)
+    {
+        [parameters addObject:[contactObject company]];
+        [sql appendString:@",?"];
+    }
+    else
+    {
+        [sql appendString:@",NULL"];
+    }
+    
+    if([[contactObject address] length] > 0)
+    {
+        [parameters addObject:[contactObject address]];
+        [sql appendString:@",?"];
+    }
+    else
+    {
+        [sql appendString:@",NULL"];
+    }
+    
+    if([[contactObject city] length] > 0)
+    {
+        [parameters addObject:[contactObject city]];
+        [sql appendString:@",?"];
+    }
+    else
+    {
+        [sql appendString:@",NULL"];
+    }
+    
+    if([[contactObject state] length] > 0)
+    {
+        [parameters addObject:[contactObject state]];
+        [sql appendString:@",?"];
+    }
+    else
+    {
+        [sql appendString:@",NULL"];
+    }
+    
+    if([contactObject numberOfItems] != nil)
+    {
+        [parameters addObject:[contactObject numberOfItems]];
+        [sql appendString:@",?"];
+    }
+    else
+    {
+        [sql appendString:@",NULL"];
+    }
+    
+    if([[contactObject modificationDate] length] > 0)
+    {
+        [parameters addObject:[contactObject modificationDate]];
+        [sql appendString:@",?"];
+    }
+    else
+    {
+        [sql appendString:@",NULL"];
+    }
+    
+    if([[contactObject userThumbnail] length] > 10)
+    {
+        [parameters addObject:[contactObject userThumbnail]];
+        [sql appendString:@",?"];
+    }
+    else
+    {
+        [sql appendString:@",NULL"];
+    }
+    
+    
+    [sql appendString:@")"];
+    
+    NSDictionary *sqlAndParams = [NSDictionary dictionaryWithObjectsAndKeys:sql, @"SQL", parameters, @"Parameters", nil];
+	return sqlAndParams;
+}
+
 +(BOOL)insertContact:(ContactObject*)contactObject
 {
-    BOOL status = [[AppManager DataAccess] ExecuteStatement:@"insert into Contacts (sync_bit,sync_delete,sync_datetime,accountID,contactID,firstName,lastName,emailAddress,phoneNumber,phoneHash,emailHash,nameHash,birthDate,modificationDate,company,address,city,state,userThumbnail) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",[NSNumber numberWithBool:YES],[NSNumber numberWithBool:NO],[AppManager UTCDateTime],[contactObject accountID],[contactObject contactID],[contactObject firstName],[contactObject lastName],[contactObject emailAddress],[contactObject phoneNumber],[contactObject phoneHash],[contactObject emailHash],[contactObject nameHash],[contactObject birthDate],[contactObject modificationDate],[contactObject company],[contactObject address],[contactObject city],[contactObject state],[contactObject userThumbnail],nil];
+    NSDictionary *sqlAndParams = [self insertContactsSQL:contactObject];
+	BOOL status = [[AppManager DataAccess] ExecuteStatement:[sqlAndParams objectForKey:@"SQL"] WithParameters:[sqlAndParams objectForKey:@"Parameters"]];
     return status;
 }
 
 +(NSMutableArray*)getContactsForView
 {
-    NSMutableArray *contactArray = [[AppManager DataAccess] GetRecordsForQuery:@"select * from Contacts",nil];
+    NSMutableArray *contactArray = [[AppManager DataAccess] GetRecordsForQuery:@"select * from Contacts order by lastName asc, firstName asc ",nil];
     ContactConvertor *contactConvertor = [[ContactConvertor alloc] init];
     NSMutableArray *contactConvertorArray = [contactConvertor convertToObjects:contactArray];
     return contactConvertorArray;
@@ -35,8 +213,24 @@
 
 +(BOOL)updateContact:(ContactObject*)contactObject
 {
-    BOOL status = [[AppManager DataAccess] ExecuteStatement:@"update Contacts set sync_bit = ?,sync_delete = ?,sync_datetime = ?,accountID = ?,contactID = ?,firstName = ?,lastName = ?,emailAddress = ?,phoneNumber = ?,phoneHash = ?,emailHash = ?,birthDate = ?,modificationDate = ?,company = ?,address = ?,city = ?,state = ?,nameHash = ?,userThumbnail = ? where contactID = ?",[NSNumber numberWithBool:YES],[NSNumber numberWithBool:NO],[AppManager UTCDateTime],[contactObject accountID],[contactObject contactID],[contactObject firstName],[contactObject lastName],[contactObject emailAddress],[contactObject phoneNumber],[contactObject phoneHash],[contactObject emailHash],[contactObject birthDate],[contactObject modificationDate],[contactObject company],[contactObject address],[contactObject city],[contactObject state],[contactObject nameHash],[contactObject userThumbnail],[contactObject contactID],nil];
+    BOOL status = [[AppManager DataAccess] ExecuteStatement:@"update Contacts set sync_bit = ?,sync_delete = ?,sync_datetime = ?,accountID = ?,contactID = ?,firstName = ?,lastName = ?,emailAddress = ?,phoneNumber = ?,phoneHash = ?,emailHash = ?,birthDate = ?,modificationDate = ?,company = ?,address = ?,city = ?,state = ?,nameHash = ?, numberOfItems = ?,userThumbnail = ? where contactID = ?",[NSNumber numberWithBool:YES],[NSNumber numberWithBool:NO],[AppManager UTCDateTime],[contactObject accountID],[contactObject contactID],[contactObject firstName],[contactObject lastName],[contactObject emailAddress],[contactObject phoneNumber],[contactObject phoneHash],[contactObject emailHash],[contactObject birthDate],[contactObject modificationDate],[contactObject company],[contactObject address],[contactObject city],[contactObject state],[contactObject nameHash],[contactObject numberOfItems],[contactObject userThumbnail],[contactObject contactID],nil];
     return status;
+}
+
++(NSDictionary*)getContactsSectionsForViewSQL
+{
+    NSMutableString *sql = [NSMutableString string];
+	NSMutableArray *parameters = [NSMutableArray array];
+	[sql appendString:@" select (upper(substr(lastName,1,1))) as SectionHeader, count(*) as Rows from Contacts group by SectionHeader order by lastName asc, firstName asc"];
+	NSDictionary *sqlAndParams = [NSDictionary dictionaryWithObjectsAndKeys: sql, @"SQL", parameters, @"Parameters", nil];
+	return sqlAndParams;
+}
+
++(NSMutableArray*)getContactsSectionsForView
+{
+    NSDictionary *sqlAndParams = [self getContactsSectionsForViewSQL];
+	NSMutableArray *chatsArray = [[AppManager DataAccess] GetRecordsForQuery:[sqlAndParams objectForKey:@"SQL"] WithParameters:[sqlAndParams objectForKey:@"Parameters"]];
+    return chatsArray;
 }
 
 +(BOOL)deleteContact:(ContactObject*)contactObject
@@ -102,152 +296,6 @@
     return status;
 }
 
-+(NSDictionary*) insertContactsSQL:(ContactObject*)contactObject
-{
-    NSMutableString *sql = [NSMutableString string];
-	NSMutableArray *parameters = [NSMutableArray array];
-	[sql appendString:@" insert into Contacts (sync_bit,sync_delete,sync_datetime,firstName,lastName,nameHash,emailAddress,emailHash,phoneNumber,phoneHash, accountID,contactID,nameHash,userThumbnail,company,modificationDate) values(?,?,?"];
-    [parameters addObject:[NSNumber numberWithBool:YES]];
-    [parameters addObject:[NSNumber numberWithBool:NO]];
-    [parameters addObject:[AppManager UTCDateTime]];
-    
-    //Check for existance first, default to NULL if not present
-    if([[contactObject firstName] length] > 0)
-    {
-        [parameters addObject:[contactObject firstName]];
-        [sql appendString:@",?"];
-    }
-    else
-    {
-        [sql appendString:@",NULL"];
-    }
-    
-    if([[contactObject lastName] length] > 0)
-    {
-        [parameters addObject:[contactObject lastName]];
-        [sql appendString:@",?"];
-    }
-    else
-    {
-        [sql appendString:@",NULL"];
-    }
-    
-    if([[contactObject nameHash] length] > 0)
-    {
-        [parameters addObject:[contactObject nameHash]];
-        [sql appendString:@",?"];
-    }
-    else
-    {
-        [sql appendString:@",NULL"];
-    }
-
-    if([[contactObject emailAddress] length] > 1)
-    {
-        [parameters addObject:[contactObject emailAddress]];
-        [sql appendString:@",?"];
-    }
-    else
-    {
-        [sql appendString:@",NULL"];
-    }
-    
-    if([[contactObject emailHash] length] > 1)
-    {
-        [parameters addObject:[contactObject emailHash]];
-        [sql appendString:@",?"];
-    }
-    else
-    {
-        [sql appendString:@",NULL"];
-    }
-    
-    if([[contactObject phoneNumber] length] > 1)
-    {
-        [parameters addObject:[contactObject phoneNumber]];
-        [sql appendString:@",?"];
-    }
-    else
-    {
-        [sql appendString:@",NULL"];
-    }
-    
-    if([[contactObject phoneHash] length] > 1)
-    {
-        [parameters addObject:[contactObject phoneHash]];
-        [sql appendString:@",?"];
-    }
-    else
-    {
-        [sql appendString:@",NULL"];
-    }
-    
-    if([contactObject accountID] != nil)
-    {
-        [parameters addObject:[contactObject accountID]];
-        [sql appendString:@",?"];
-    }
-    else
-    {
-        [sql appendString:@",NULL"];
-    }
-    
-    if([[contactObject contactID] length] > 1)
-    {
-        [parameters addObject:[contactObject contactID]];
-        [sql appendString:@",?"];
-    }
-    else
-    {
-        [sql appendString:@",NULL"];
-    }
-    
-    if([[contactObject nameHash] length] > 0)
-    {
-        [parameters addObject:[contactObject nameHash]];
-        [sql appendString:@",?"];
-    }
-    else
-    {
-        [sql appendString:@",NULL"];
-    }
-    
-    if([[contactObject userThumbnail] length] > 10)
-    {
-        [parameters addObject:[contactObject userThumbnail]];
-        [sql appendString:@",?"];
-    }
-    else
-    {
-        [sql appendString:@",NULL"];
-    }
-    
-    if([[contactObject company] length] > 0)
-    {
-        [parameters addObject:[contactObject company]];
-        [sql appendString:@",?"];
-    }
-    else
-    {
-        [sql appendString:@",NULL"];
-    }
-    
-    if([[contactObject modificationDate] length] > 0)
-    {
-        [parameters addObject:[contactObject modificationDate]];
-        [sql appendString:@",?"];
-    }
-    else
-    {
-        [sql appendString:@",NULL"];
-    }
-    
-    [sql appendString:@")"];
-    
-    NSDictionary *sqlAndParams = [NSDictionary dictionaryWithObjectsAndKeys:sql, @"SQL", parameters, @"Parameters", nil];
-	return sqlAndParams;
-}
-
 +(NSMutableArray*)getContactsForHash:(NSString*)contactHash
 {
     NSMutableArray *contactArray = [[AppManager DataAccess] GetRecordsForQuery:@" select firstName, lastName from Contacts where phoneHash = ? OR emailHash = ? ",contactHash,contactHash,nil];
@@ -280,11 +328,11 @@
 +(BOOL)getUserContactsFromAddressBook
 {
     BOOL __block status = NO;
+    [SettingsModel setProcessingContacts:YES];
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         @autoreleasepool
         {
             [SettingsModel setStartDateTimeStamp:[AppManager UTCDateTime] forIndex:0];
-            [SettingsModel setProcessingContacts:YES];
             NSArray *contacts = [ABContactsHelper contacts];
             NSMutableArray *contactsTransaction = [[NSMutableArray alloc] init];
             NSMutableArray *uniqueContacts = [[NSMutableArray alloc] init];
@@ -292,15 +340,14 @@
             NCONLog(@"ContactModel : CALLED : Contacts : contacts count = %d",[contacts count]);
             //This get's all the UserContacts so they can be checked for duplicates
             NSMutableArray *contactsToBeDeleted = [self getUserContactIDHashes];
-            //This get's all the SmugChatContacts which we never want to delete, Sarah is in here
+            //This get's all the Contacts which we never want to delete, Sarah is in here
             //All of these come from the Server in GetMessages
-            NSMutableArray *contactsToKeep = [[NSMutableArray alloc] init];//[self getSmugContactIDHashes];
+            NSMutableArray *contactsToKeep = [[NSMutableArray alloc] init];
             
             int total = 0;
             //Sets the total number of transactions inserted at one time into DB
             //Newer devices can handle more, older devices can not, it's a memory limitation
             int totalTransactions = 200;
-            
             for (ABContact *contact in contacts)
             {
                 BOOL foundPhoneForContact=NO;
@@ -309,7 +356,9 @@
                 [contactObject setFirstName:[contact firstname]];
                 [contactObject setLastName:[contact lastname]];
                 [contactObject setModificationDate:[AppManager getUTCDateTimeForDate:[contact modificationDate]]];
-                [contactObject setNameHash:[DeviceUtils hashedValue:[NSString stringWithFormat:@"%@%@",[contact firstname],[contact lastname]] uppercase:NO]];
+                [contactObject setNameHash:[self getMD5HashedValue:[NSString stringWithFormat:@"%@%@",[contact firstname],[contact lastname]]]];
+
+                int numberOfItems = 2;
 
                 if([[contact lastname] length] < 1 && [[contact firstname] length] < 1)
                     continue;
@@ -324,12 +373,34 @@
                     [contactObject setUserThumbnail:imageData];
                 }
                 
+                //Get the Company
+                if([[contact organization] length] > 0)
+                {
+                    [contactObject setCompany:[contact organization]];
+                    numberOfItems++;
+                }
+
+                //Get the Address
+                NSArray *addressArray = [contact addressArray];
+                if([addressArray count] > 0)
+                    numberOfItems = numberOfItems + 3;
+
+                for(NSDictionary * addressDic in addressArray)
+                {
+                    [contactObject setAddress:[addressDic objectForKey:@"Street"]];
+                    [contactObject setState:[addressDic objectForKey:@"State"]];
+                    [contactObject setCity:[addressDic objectForKey:@"City"]];
+                }
+
+                NCONLog(@"ContactModel : Name : %@ %@ numberOfItems = %d", contactObject.firstName,contactObject.lastName, numberOfItems);
+
                 NSArray *phoneArray = [contact phoneArray];
                 NCONLog(@"ContactModel : Name: %@  %@ : PhoneArray[%d] : %@", contactObject.firstName,contactObject.lastName, [phoneArray count],phoneArray);
                 if([phoneArray count] > 0)
                 {
                     [contactObject setEmailAddress:nil];
                     [contactObject setEmailHash:nil];
+                    
                     for(NSString * phone in phoneArray)
                     {
                         @autoreleasepool
@@ -345,6 +416,10 @@
                             
                             if([uniqueContacts indexOfObject:phoneMD5]==NSNotFound)
                             {
+                                numberOfItems++;
+                                [contactObject setNumberOfItems:[NSNumber numberWithInt:numberOfItems]];
+                                NCONLog(@"ContactModel : Name : PHONE : %@ -- numberOfItems = %d", contactObject.firstName, numberOfItems);
+
                                 [uniqueContacts addObject:phoneMD5];
                                 
                                 BOOL contactIDExists = [self doesContactExistForContactID:phoneMD5];
@@ -380,6 +455,8 @@
                                         contactsTransaction = [[NSMutableArray alloc] init];
                                     }
                                 }
+                                numberOfItems--;
+                                [contactObject setNumberOfItems:[NSNumber numberWithInt:numberOfItems]];
                             }
                         }//autoreleasepool
                     }
@@ -405,6 +482,10 @@
                             
                             if([uniqueContacts indexOfObject:emailMD5]==NSNotFound)
                             {
+                                numberOfItems++;
+                                [contactObject setNumberOfItems:[NSNumber numberWithInt:numberOfItems]];
+                                NCONLog(@"ContactModel : Name : EMAIL : %@ -- numberOfItems = %d", contactObject.firstName, numberOfItems);
+
                                 [uniqueContacts addObject:emailMD5];
                                 
                                 BOOL contactIDExists = [self doesContactExistForContactID:emailMD5];
@@ -440,11 +521,14 @@
                                         contactsTransaction = [[NSMutableArray alloc] init];
                                     }
                                 }
+                                numberOfItems--;
+                                [contactObject setNumberOfItems:[NSNumber numberWithInt:numberOfItems]];
                             }
                         }
                     }//autoreleasepool
                 }
                 emailArray = nil;
+                NCONLog(@"ContactModel : contactObject : %@ ",contactObject);
             }
             //remove contacts that are no longer in the Users Address Book
             //You need this to get rid of duplicates and contacts that have been deleted from the Users Address Book
@@ -467,14 +551,17 @@
                 NCONLog(@"ContactModel : UPDATE contactsTransaction : status = %@ ",status?@"YES":@"NO");
             }
             
-            [SettingsModel setProcessingContacts:NO];
             [SettingsModel setTotalUserContacts:[NSNumber numberWithInt:[ABContactsHelper validContactsCount]]];
             [SettingsModel setFinishDateTimeStamp:[AppManager UTCDateTime] forIndex:0];
             NCONLog(@"ContactModel : Finished Insert [%d] : time = %f",[contactsTransaction count],[SettingsModel getStartToFinishTimeForIndex:0]);
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [[NSNotificationCenter defaultCenter] postNotificationName:CONTACTS_UPDATE_NOTIFICATION object:nil];
+            });
         }
     });
+    [SettingsModel setProcessingContacts:NO];
 	return status;
 }
-
 
 @end

@@ -24,10 +24,12 @@
         contactObj.phoneNumber = contact[@"phoneNumber"];
         contactObj.phoneHash = contact[@"phoneHash"];
         contactObj.emailHash = contact[@"emailHash"];
+        contactObj.nameHash = contact[@"nameHash"];
         contactObj.birthDate = contact[@"birthDate"];
         contactObj.modificationDate = contact[@"modificationDate"];
         contactObj.company = contact[@"company"];
         contactObj.address = contact[@"address"];
+        contactObj.numberOfItems = contact[@"numberOfItems"];
         contactObj.city = contact[@"city"];
         contactObj.state = contact[@"state"];
         contactObj.userThumbnail = contact[@"userThumbnail"];

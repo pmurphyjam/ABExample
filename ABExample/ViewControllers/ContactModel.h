@@ -13,9 +13,11 @@
 
 +(BOOL)insertContact:(ContactObject*)contactObject;
 +(NSMutableArray*)getContactsForView;
++(NSMutableArray*)getContactsSectionsForView;
 +(BOOL)updateContact:(ContactObject*)contactObject;
 +(BOOL)deleteContact:(ContactObject*)contactObject;
 +(BOOL)updateContactsRequired;
 +(BOOL)getUserContactsFromAddressBook;
++(NSString*)getMD5HashedValue:(NSString*)value;
 
 @end

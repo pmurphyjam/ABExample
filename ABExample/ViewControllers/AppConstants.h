@@ -32,6 +32,8 @@
 //AppConnections
 #define kCRASH_DATA_CONNECTION        @"CrashDataConnection"
 
+//Notifications
+#define CONTACTS_UPDATE_NOTIFICATION    @"ContactsUpdateNotification"
 
 //#define DEBUG
 #ifdef DEBUG
@@ -54,7 +56,7 @@
 #    define NSDBLog(...)
 #endif
 
-#define DEBUGCON
+//#define DEBUGCON
 #ifdef DEBUGCON
 #    define NCONLog(...) NSLog(__VA_ARGS__)
 #else

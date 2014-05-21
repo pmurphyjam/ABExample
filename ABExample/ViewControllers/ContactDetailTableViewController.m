@@ -7,26 +7,23 @@
 //
 
 #import "ContactDetailTableViewController.h"
-#import "ContactDetailTableViewCell.h"
 #import "AppAnalytics.h"
 #import "AppManager.h"
 #import "AppDebugLog.h"
 #import "SettingsModel.h"
+#import "ContactModel.h"
 
 @interface ContactDetailTableViewController ()
-
-@property (nonatomic,strong) NSMutableDictionary *contactImages;
 
 @end
 
 @implementation ContactDetailTableViewController
 
-@synthesize delegate,firstNameTextField,lasttNameTextField,addressTextField,emailAddressTextField,phoneNumberTextField,cityTextField,stateTextField,companyTextField,birthDateTextField,contactToEdit,contactImages;
+@synthesize delegate,firstNameTextField,lasttNameTextField,addressTextField,emailAddressTextField,phoneNumberTextField,cityTextField,stateTextField,companyTextField,birthDateTextField,contactToEdit;
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    contactImages = [[NSMutableDictionary alloc] init];
     [firstNameTextField setDelegate:self];
     [lasttNameTextField setDelegate:self];
     [addressTextField setDelegate:self];
@@ -68,40 +65,11 @@
     return [textField resignFirstResponder];
 }
 
--(NSString*)getRandomCompanyLogo
-{
-    //These PNG's are in the Companies folder
-    //There never displayed, but it shows how to store an image in the DB
-    NSString *companyLogo = @"Apple.png";
-    int logoInt = (int)arc4random() % 8;
-    if(logoInt == 0)
-        companyLogo = @"Apple.png";
-    else if (logoInt == 1)
-        companyLogo = @"AMD.png";
-    else if (logoInt == 2)
-        companyLogo = @"Intel.png";
-    else if (logoInt == 3)
-        companyLogo = @"Cisco.png";
-    else if (logoInt == 4)
-        companyLogo = @"ChaseBank.png";
-    else if (logoInt == 5)
-        companyLogo = @"Chevron.png";
-    else if (logoInt == 6)
-        companyLogo = @"BofA.png";
-    else if (logoInt == 7)
-        companyLogo = @"WellsFargo.png";
-    else if (logoInt == 8)
-        companyLogo = @"Zynga.png";
-    else
-        companyLogo = @"Apple.png";
-    
-    return companyLogo;
-}
-
 -(IBAction)save:(id)sender
 {
     if(contactToEdit != nil)
     {
+        int numberOfItems = 2;
         contactToEdit.firstName = firstNameTextField.text;
         contactToEdit.lastName = lasttNameTextField.text;
         contactToEdit.address = addressTextField.text;
@@ -111,8 +79,43 @@
         contactToEdit.state = stateTextField.text;
         contactToEdit.company = companyTextField.text;
         contactToEdit.birthDate = birthDateTextField.text;
-        [contactToEdit setUserThumbnail:UIImagePNGRepresentation([UIImage imageNamed:[self getRandomCompanyLogo]])];
         
+        [contactToEdit setNameHash:[ContactModel getMD5HashedValue:[NSString stringWithFormat:@"%@%@",[contactToEdit firstName],[contactToEdit lastName]]]];
+        
+        if([[contactToEdit address] length] > 0)
+            numberOfItems++;
+        
+        if([[contactToEdit city] length] > 0)
+            numberOfItems++;
+        
+        if([[contactToEdit state] length] > 0)
+            numberOfItems++;
+        
+        if([[contactToEdit emailAddress] length] > 0)
+        {
+            numberOfItems++;
+            NSString *emailMD5 = [ContactModel getMD5HashedValue:[contactToEdit emailAddress]];
+            [contactToEdit setEmailHash:emailMD5];
+            [contactToEdit setContactID:emailMD5];
+        }
+        
+        if([[contactToEdit phoneNumber] length] > 0)
+        {
+            numberOfItems++;
+            NSString *phoneMD5 = [ContactModel getMD5HashedValue:[contactToEdit phoneNumber]];
+            [contactToEdit setPhoneHash:phoneMD5];
+            [contactToEdit setContactID:phoneMD5];
+        }
+        
+        if([[contactToEdit company] length] > 0)
+            numberOfItems++;
+        
+        if([[contactToEdit birthDate] length] > 0)
+            numberOfItems++;
+        
+        [contactToEdit setNumberOfItems:[NSNumber numberWithInt:numberOfItems]];
+        
+        [contactToEdit setModificationDate:[AppManager UTCDateTime]];
         NSMutableDictionary *event =
         [[GAIDictionaryBuilder createEventWithCategory:@"ContactDetailVCtrl"
                                                 action:@"EditExistingContact"
@@ -130,6 +133,7 @@
     }
     else
     {
+        int numberOfItems = 2;
         ContactObject *contact = [[ContactObject alloc] init];
         contact.firstName = firstNameTextField.text;
         contact.lastName = lasttNameTextField.text;
@@ -140,8 +144,43 @@
         contact.state = stateTextField.text;
         contact.company = companyTextField.text;
         contact.birthDate = birthDateTextField.text;
-        [contactToEdit setUserThumbnail:UIImagePNGRepresentation([UIImage imageNamed:[self getRandomCompanyLogo]])];
         
+        [contact setNameHash:[ContactModel getMD5HashedValue:[NSString stringWithFormat:@"%@%@",[contact firstName],[contact lastName]]]];
+
+        if([[contact address] length] > 0)
+            numberOfItems++;
+        
+        if([[contact city] length] > 0)
+            numberOfItems++;
+        
+        if([[contact state] length] > 0)
+            numberOfItems++;
+        
+        if([[contact emailAddress] length] > 0)
+        {
+            numberOfItems++;
+            NSString *emailMD5 = [ContactModel getMD5HashedValue:[contact emailAddress]];
+            [contact setEmailHash:emailMD5];
+            [contact setContactID:emailMD5];
+        }
+        
+        if([[contact phoneNumber] length] > 0)
+        {
+            numberOfItems++;
+            NSString *phoneMD5 = [ContactModel getMD5HashedValue:[contact phoneNumber]];
+            [contact setPhoneHash:phoneMD5];
+            [contact setContactID:phoneMD5];
+        }
+        
+        if([[contact company] length] > 0)
+            numberOfItems++;
+        
+        if([[contact birthDate] length] > 0)
+            numberOfItems++;
+        
+        [contact setNumberOfItems:[NSNumber numberWithInt:numberOfItems]];
+        [contact setModificationDate:[AppManager UTCDateTime]];
+
         NSMutableDictionary *event =
         [[GAIDictionaryBuilder createEventWithCategory:@"ContactDetailVCtrl"
                                                 action:@"AddNewContact"
@@ -162,7 +201,7 @@
 -(BOOL)validate:(ContactObject*)contact
 {
     //Should really check all the fields, but hey it's a demo
-    if(([contact.firstName length] == 0) || ([contact.address length] == 0))
+    if(([contact.firstName length] == 0) || ([contact.lastName length] == 0))
     {
         return NO;
     }

@@ -25,6 +25,7 @@
 @property (nonatomic,strong) NSString *address;
 @property (nonatomic,strong) NSString *city;
 @property (nonatomic,strong) NSString *state;
+@property (nonatomic,strong) NSNumber *numberOfItems;
 @property (nonatomic,strong) NSData *userThumbnail;
 
 @end
