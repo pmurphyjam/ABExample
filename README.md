@@ -9,7 +9,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 This ABExample reads the users AddressBook, and then displays them. You can delete Contacts from this App
 but they will not be deleted from the users AddressBook. This ABExample will work for a user which has 
-a large number of Contacts in excess of 20K or more.
+a large number of Contacts in excess of 20K or more. The Contacts Table View supports alpha section headers, 
+deleting, updating, indexing for quick scrolling, and searching using a UISearchDisplayController for 
+searching first and last name.
 
 Uses ABContact which works with ARC and makes reading the iPhone AddressBook easy.
 Note : If your coping this you will have to pull this library and copy it into the ABExample\ABContacts folder.
