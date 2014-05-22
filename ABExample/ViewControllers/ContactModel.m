@@ -338,10 +338,8 @@
             NSMutableArray *uniqueContacts = [[NSMutableArray alloc] init];
             
             NCONLog(@"ContactModel : CALLED : Contacts : contacts count = %d",[contacts count]);
-            //This get's all the UserContacts so they can be checked for duplicates
+            //This get's all the Contacts so they can be checked for duplicates
             NSMutableArray *contactsToBeDeleted = [self getUserContactIDHashes];
-            //This get's all the Contacts which we never want to delete, Sarah is in here
-            //All of these come from the Server in GetMessages
             NSMutableArray *contactsToKeep = [[NSMutableArray alloc] init];
             
             int total = 0;
@@ -403,6 +401,7 @@
                     
                     for(NSString * phone in phoneArray)
                     {
+                        //Make sure everything gets released for a user with 1000's of contacts
                         @autoreleasepool
                         {
                             foundPhoneForContact = YES;
@@ -470,6 +469,7 @@
                     [contactObject setPhoneHash:nil];
                     for(NSString * email in emailArray)
                     {
+                        //Make sure everything gets released for a user with 1000's of contacts
                         @autoreleasepool
                         {
                             [contactObject setEmailAddress:email];
@@ -556,6 +556,7 @@
             NCONLog(@"ContactModel : Finished Insert [%d] : time = %f",[contactsTransaction count],[SettingsModel getStartToFinishTimeForIndex:0]);
             
             dispatch_async(dispatch_get_main_queue(), ^{
+                //Send a notification to the Contacts view to reload
                 [[NSNotificationCenter defaultCenter] postNotificationName:CONTACTS_UPDATE_NOTIFICATION object:nil];
             });
         }
