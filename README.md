@@ -29,9 +29,9 @@ identifier. The upgradeDB:(double)dbVersion method will check for the current ve
 SQL alter table commands to upgrade the existing DB to the latest version.
 
 In addition this App incorporates Google Analytics, you will need to set your own AnalyticsIdentifier in
-the DBExample-Info.plist.
+the ABExample-Info.plist.
 
-Note : In the DBExample Xcode project : Build Phases, there is a Run Script that has two lines commented
+Note : In the ABExample Xcode project : Build Phases, there is a Run Script that has two lines commented
 out. These lines add a GitCommit and BuildDate to the App and are stored within the App. An initial build
 will have issues with this script, but once it's built once it should work fine there after so you can then
 comment these lines in the Run Script back in. Now your App will be able to display it's GitCommit, and
