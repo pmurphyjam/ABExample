@@ -5,6 +5,9 @@
 //  Created by Pat Murphy on 5/20/14.
 //  Copyright (c) 2014 Fitamatic All rights reserved.
 //
+//  Info : Contact Table View Cell, just displays all the contact elements.
+//  Uses a Nib for intial layout, dynamic layout takes place in cellForRow.
+//
 
 #import <UIKit/UIKit.h>
 

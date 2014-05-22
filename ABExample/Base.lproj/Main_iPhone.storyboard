@@ -4,48 +4,67 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
     </dependencies>
     <scenes>
-        <!--Contacts Table View Controller - Contacts-->
-        <scene sceneID="T7K-cb-4kE">
+        <!--Contacts Table View Controller - ABExample-->
+        <scene sceneID="a32-Sn-IK6">
             <objects>
-                <tableViewController id="XkX-bk-IUl" customClass="ContactsTableViewController" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="JuL-j1-d0U">
+                <tableViewController id="IvS-ju-q7F" customClass="ContactsTableViewController" sceneMemberID="viewController">
+                    <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="4GG-te-KAC">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <searchBar key="tableHeaderView" contentMode="redraw" id="i9g-VP-YR8">
+                            <rect key="frame" x="0.0" y="64" width="320" height="44"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                            <textInputTraits key="textInputTraits" autocapitalizationType="words" autocorrectionType="no"/>
+                            <connections>
+                                <outlet property="delegate" destination="IvS-ju-q7F" id="Xg5-uG-Woa"/>
+                            </connections>
+                        </searchBar>
                         <prototypes>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" id="URO-75-e6A" customClass="ContactTableViewCell">
-                                <rect key="frame" x="0.0" y="86" width="320" height="44"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="URO-75-e6A" id="tTr-hL-2V5">
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" id="Iu6-A6-yxt" customClass="ContactTableViewCell">
+                                <rect key="frame" x="0.0" y="130" width="320" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Iu6-A6-yxt" id="5zC-W6-CO7">
                                     <rect key="frame" x="0.0" y="0.0" width="287" height="43"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </tableViewCellContentView>
                                 <connections>
-                                    <segue destination="qwV-s1-Cnp" kind="modal" identifier="EditContact" id="YG3-Fh-sZq"/>
+                                    <segue destination="qwV-s1-Cnp" kind="modal" identifier="EditContact" id="LQY-BO-mcI"/>
                                 </connections>
                             </tableViewCell>
                         </prototypes>
                         <connections>
-                            <outlet property="dataSource" destination="XkX-bk-IUl" id="bej-BG-Cf7"/>
-                            <outlet property="delegate" destination="XkX-bk-IUl" id="dHf-Zd-yem"/>
+                            <outlet property="dataSource" destination="IvS-ju-q7F" id="2AF-fa-0O4"/>
+                            <outlet property="delegate" destination="IvS-ju-q7F" id="6Mt-uX-HE4"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Contacts" id="Z7a-7p-Czd">
-                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="1G7-Cg-nLI">
+                    <navigationItem key="navigationItem" title="ABExample" id="ChQ-fO-AQo">
+                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="VNg-wy-OEu">
                             <connections>
-                                <segue destination="qwV-s1-Cnp" kind="modal" identifier="AddContact" id="j8d-5I-rWv"/>
+                                <segue destination="qwV-s1-Cnp" kind="modal" identifier="AddContact" id="CJ5-aU-h0K"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
                     <connections>
-                        <outlet property="contactsTable" destination="JuL-j1-d0U" id="zhr-ID-el9"/>
+                        <outlet property="contactsTable" destination="4GG-te-KAC" id="7CA-3H-U0K"/>
+                        <outlet property="searchBar" destination="i9g-VP-YR8" id="AER-Wr-CvW"/>
+                        <outlet property="searchDisplayController" destination="r0M-Ao-BbS" id="S7Y-ZY-4y3"/>
                     </connections>
                 </tableViewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="rkP-oy-cjU" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="tIE-PK-Jfe" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <searchDisplayController id="r0M-Ao-BbS">
+                    <connections>
+                        <outlet property="delegate" destination="IvS-ju-q7F" id="KXl-Px-Gil"/>
+                        <outlet property="searchBar" destination="i9g-VP-YR8" id="49Z-6h-Rdf"/>
+                        <outlet property="searchContentsController" destination="IvS-ju-q7F" id="JoH-9m-R6A"/>
+                        <outlet property="searchResultsDataSource" destination="IvS-ju-q7F" id="e4d-lj-rxT"/>
+                        <outlet property="searchResultsDelegate" destination="IvS-ju-q7F" id="eai-IG-UP9"/>
+                    </connections>
+                </searchDisplayController>
             </objects>
-            <point key="canvasLocation" x="788" y="209"/>
+            <point key="canvasLocation" x="657" y="208"/>
         </scene>
-        <!--Contact Detail Table View Controller - Contact-->
+        <!--Contact Detail Table View Controller - Add Contact-->
         <scene sceneID="Lbj-VU-g6T">
             <objects>
                 <tableViewController id="JXJ-fG-7gi" customClass="ContactDetailTableViewController" sceneMemberID="viewController">
@@ -235,7 +254,7 @@
                             <outlet property="delegate" destination="JXJ-fG-7gi" id="XoG-EA-bUu"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Contact" id="EBw-Zr-Xtl">
+                    <navigationItem key="navigationItem" title="Add Contact" id="EBw-Zr-Xtl">
                         <barButtonItem key="leftBarButtonItem" title="Cancel" id="PjC-Nv-eCs">
                             <connections>
                                 <action selector="cancel:" destination="JXJ-fG-7gi" id="IE9-ai-GWj"/>
@@ -286,7 +305,7 @@
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <connections>
-                        <segue destination="XkX-bk-IUl" kind="relationship" relationship="rootViewController" id="LG1-pJ-Iwv"/>
+                        <segue destination="IvS-ju-q7F" kind="relationship" relationship="rootViewController" id="Q2m-uo-5gj"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="0tf-Zn-Ezt" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -300,6 +319,6 @@
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="YG3-Fh-sZq"/>
+        <segue reference="LQY-BO-mcI"/>
     </inferredMetricsTieBreakers>
 </document>

@@ -18,12 +18,13 @@
 
 @interface ContactsTableViewController ()
 
+@property(nonatomic,strong) IBOutlet UITableView *contactsTable;
 @property(nonatomic,strong) NSMutableArray *contactArray;
 @property(nonatomic,strong) NSMutableArray *sectionDetails;
 @property(nonatomic,strong) NSMutableArray *contactSearchArray;
-@property(nonatomic,strong) IBOutlet UITableView *contactsTable;
 @property(nonatomic,strong) NSMutableArray *indexArray;
-
+@property(nonatomic,strong) NSIndexPath *indexPathToShowSelection;
+@property(nonatomic,strong) NSString *currentSearchString;
 @end
 
 
@@ -36,6 +37,8 @@
 @synthesize indexArray;
 @synthesize searchDisplayController;
 @synthesize searchBar;
+@synthesize indexPathToShowSelection;
+@synthesize currentSearchString;
 
 //#define DEBUG
 #import "AppConstants.h"
@@ -46,6 +49,8 @@
     NDLog(@"ContactsVCtrl: viewDidLoad ");
     contactArray = [[NSMutableArray alloc] init];
     indexArray = [NSMutableArray arrayWithObjects:@"A",@"B",@"C",@"D",@"E",@"F",@"G",@"H",@"I",@"J",@"K",@"L",@"M",@"N",@"O",@"P",@"Q",@"R",@"S",@"T",@"U",@"V",@"W",@"X",@"Y",@"Z", nil];
+    
+    [searchBar setPlaceholder:@"Search for a Contact"];
 }
 
 -(void)viewWillAppear:(BOOL)animated
@@ -64,6 +69,8 @@
 
 - (void)viewDidAppear:(BOOL)animated
 {
+    [searchDisplayController setActive:NO animated:NO];
+    [searchBar resignFirstResponder];
     [super viewDidAppear:animated];
 }
 
@@ -77,23 +84,34 @@
     [super viewDidDisappear:animated];
 }
 
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
+{
+    //Headers and search bars need to be reloaded on a view rotation
+    if (searchDisplayController.active)
+    {
+        [searchDisplayController.searchResultsTableView reloadData];
+    }
+    else
+        [contactsTable reloadData];
+}
+
 -(void)populateContacts:(BOOL)reload
 {
-    contactArray= [ContactModel getContactsForView];
-    contactSearchArray= [ContactModel getContactsForView];
+    contactArray = [ContactModel getContactsForView];
+    contactSearchArray = [ContactModel getContactsForView];
     sectionDetails = [ContactModel getContactsSectionsForView];
     if(reload)
         [contactsTable reloadData];
-    NDLog(@"ContactsVCtrl: contactArray[%d] = %@",[contactArray count],contactArray);
+    NDLog(@"ContactsVCtrl: contactArray[%d] = %@",(int)[contactArray count],contactArray);
 }
 
 -(void)updateContacts
 {
-    contactArray= [ContactModel getContactsForView];
-    contactSearchArray= [ContactModel getContactsForView];
+    contactArray = [ContactModel getContactsForView];
+    contactSearchArray = [ContactModel getContactsForView];
     sectionDetails = [ContactModel getContactsSectionsForView];
     [contactsTable reloadData];
-    NDLog(@"ContactsVCtrl: contactArray[%d] = %@",[contactArray count],contactArray);
+    NDLog(@"ContactsVCtrl: contactArray[%d] = %@",(int)[contactArray count],contactArray);
 }
 
 -(void) prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
@@ -111,8 +129,128 @@
         [contactDetailTableViewController setDelegate:(id)self];
         NSIndexPath *indexPath = (NSIndexPath*)sender;
         ContactObject *contact = [contactArray objectAtIndex:[indexPath row]];
-        NDLog(@"ContactsVCtrl: cellForRow[%d] : Segue : Edit : contact = %@ : sender = %@",[indexPath row],contact,sender);
+        NDLog(@"ContactsVCtrl: cellForRow[%d] : Segue : Edit : contact = %@ : sender = %@",(int)[indexPath row],contact,sender);
         contactDetailTableViewController.contactToEdit = contact;
+    }
+}
+
+-(void)performSearchMatchingSearchText:(NSString*)searchText
+{
+    __block NSString *firstName = @"";
+    __block NSString *lastName = @"";
+    __block BOOL twoNames = NO;
+    //Need to search for first and last names, and get rid of white space characters.
+    //If we have first and last, then use AND else use OR since it could be a first or a last name
+    NSArray *nameArray = [searchText componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+    NDLog(@"ContactsVCtrl : performSearchMatchingSearchText :  nameArray[%d] = %@",(int)[nameArray count],nameArray);
+    if([nameArray count] > 0)
+    {
+        firstName = [nameArray objectAtIndex:0];
+        lastName = [nameArray objectAtIndex:0];
+        if([nameArray count] > 1)
+        {
+            lastName = [nameArray objectAtIndex:1];
+            if([lastName length] > 0)
+                twoNames = YES;
+        }
+    }
+    NDLog(@"ContactsVCtrl : performSearchMatchingSearchText : firstName = %@ : lastName = %@ : twoNames = %@",firstName,lastName,twoNames?@"YES":@"NO");
+    NSIndexSet *indexesOfItemsWithMatching = [contactArray indexesOfObjectsPassingTest:^BOOL(ContactObject *obj, NSUInteger idx, BOOL *stop)
+                                              {
+                                                  NSString *lastNameMatchingItems = [[obj lastName] lowercaseString];
+                                                  NSRange lastNameRange = [lastNameMatchingItems rangeOfString:lastName];
+                                                  NSString *firstNameMatchingItems = [[obj firstName] lowercaseString];
+                                                  NSRange firstNameRange = [firstNameMatchingItems rangeOfString:firstName];
+                                                  BOOL found = NO;
+                                                  if(twoNames)
+                                                      found = (lastNameRange.location != NSNotFound && firstNameRange.location != NSNotFound);
+                                                  else
+                                                      found = (lastNameRange.location != NSNotFound || firstNameRange.location != NSNotFound);
+                                                  return found;
+                                              }];
+    
+    if( [indexesOfItemsWithMatching count] > 0 )
+    {
+        NSArray *searchResultsArray = [NSArray arrayWithArray:[contactArray objectsAtIndexes:indexesOfItemsWithMatching]];
+        [contactSearchArray setArray:searchResultsArray];
+    }
+    else
+    {
+        //Clear the search array if you have no matches otherwise the previous one will persist
+        [contactSearchArray setArray:[NSArray new]];
+    }
+}
+
+#pragma mark - UISearchBar Delegate Methods
+
+- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBarInst
+{
+    NDLog(@"CompanyVCtrl : searchBarCancelButtonClicked ");
+    [searchBar setText:@""];
+    [searchDisplayController setActive:NO animated:YES];
+    [searchBar resignFirstResponder];
+    contactSearchArray = [ContactModel getContactsForView];
+    [contactsTable reloadData];
+    NDLog(@"CompanyVCtrl : searchBarCancelButtonClicked : searchBar = %@",NSStringFromCGRect(searchBar.frame));
+}
+
+-(BOOL)searchBarShouldBeginEditing:(UISearchBar *)aSearchBar
+{
+    return YES;
+}
+
+-(void)searchBarTextDidBeginEditing:(UISearchBar *)aSearchBar
+{
+    
+}
+
+- (void)searchBarTextDidEndEditing:(UISearchBar *)aSearchBar
+{
+    NDLog(@"CompanyVCtrl : searchBarTextDidEndEditing ");
+    [searchBar resignFirstResponder];
+}
+
+- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText
+{
+    NDLog(@"CompanyVCtrl : searchBar : textDidChange");
+    if ([searchText isEqualToString:@""])
+    {
+        [contactsTable reloadData];
+    }
+    
+    [self setCurrentSearchString:[searchText lowercaseString]];
+    [self performSearchMatchingSearchText:currentSearchString];
+    [searchDisplayController.searchResultsTableView reloadData];
+}
+
+- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBarInst
+{
+    [self performSelector:@selector(didRotateFromInterfaceOrientation:) withObject:nil afterDelay:0.0];
+}
+
+#pragma mark UISearchDisplayController Delegate Methods
+
+- (void)searchDisplayControllerWillBeginSearch:(UISearchDisplayController *)controller
+{
+    searchDisplayController.searchResultsTableView.frame = contactsTable.frame;
+}
+
+- (void)searchDisplayControllerWillEndSearch:(UISearchDisplayController *)controller
+{
+    
+}
+
+- (void)searchDisplayControllerDidEndSearch:(UISearchDisplayController *)controller
+{
+    
+}
+
+- (void)searchDisplayController:(UISearchDisplayController *)controller willHideSearchResultsTableView:(UITableView *)tableView
+{
+    if( indexPathToShowSelection != nil )
+    {
+        [contactsTable selectRowAtIndexPath:indexPathToShowSelection animated:NO scrollPosition:UITableViewScrollPositionMiddle];
+        indexPathToShowSelection = nil;
     }
 }
 
@@ -144,6 +282,7 @@
 {
     if (tableView == searchDisplayController.searchResultsTableView)
     {
+        //If we're in search mode we have no IndexTitles
         return nil;
     }
     else if (tableView == contactsTable)
@@ -158,19 +297,49 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    return 0.0;
+    CGFloat headerHeight = 28.0;
+    if (tableView == contactsTable)
+        headerHeight = 28.0;
+    else if (tableView == searchDisplayController.searchResultsTableView)
+        //If we're in search mode we have no sectionHdrView
+        headerHeight = 0.0;
+
+    return headerHeight;
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
-    return nil;
+    //This is the alpha section header we return
+    UIView *sectionHdrView = [[UIView alloc] initWithFrame:CGRectMake(0,0,self.view.frame.size.width,28)];
+    sectionHdrView.layer.cornerRadius = 14;
+    sectionHdrView.layer.masksToBounds = YES;
+    sectionHdrView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 22, 0, self.view.frame.size.width, 28)];
+    label.backgroundColor = [UIColor clearColor];
+    label.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
+    label.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
+    [sectionHdrView setBackgroundColor:[UIColor lightGrayColor]];
+    [label setFont:[UIFont fontWithName:@"Helvetica-Bold" size:18]];
+    [label setTextColor:[UIColor blackColor]];
+    [sectionHdrView addSubview:label];
+    
+    if (tableView == contactsTable)
+    {
+        [label setText:[NSString stringWithString:[[sectionDetails objectAtIndex:section] objectForKey:@"SectionHeader"]]];
+    }
+    else if (tableView == searchDisplayController.searchResultsTableView)
+        //If we're in search mode we have no sectionHdrView
+        sectionHdrView = nil;
+    
+    return sectionHdrView;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView sectionForSectionIndexTitle:(NSString *)title atIndex:(NSInteger)index
 {
     if (tableView == searchDisplayController.searchResultsTableView)
     {
-        return -1;
+        //If we're in search mode we have just one section
+        return 1;
     }
     else if (tableView == contactsTable)
     {
@@ -193,7 +362,7 @@
                 result = [selectedIndex compare:[[sectionDetails objectAtIndex:sectionHeadersIndex] objectForKey:@"SectionHeader"]];
             }
         }
-        NDLog(@"ContactsVCtrl : index = %d : sectionForIndex = %d : selectedIndex = %@",index,sectionHeadersIndex,selectedIndex);
+        NDLog(@"ContactsVCtrl : index = %d : sectionForIndex = %d : selectedIndex = %@",(int)index,sectionHeadersIndex,selectedIndex);
         return sectionHeadersIndex;
     }
     else
@@ -212,12 +381,25 @@
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     NSInteger sections = 0;
+    //If we're in search mode we have just one section
     if (tableView == searchDisplayController.searchResultsTableView)
         sections = 1;
     else if (tableView == contactsTable)
         sections =  [sectionDetails count];
     
     return sections;
+}
+
+-(int)getRowFromSectionDetails:(NSIndexPath*)indexPath
+{
+    //Get the row to the ContactObject from the sectionsDetails where the number of alpha Contacts has a Rows number
+    int row = 0;
+    for (int index = 0; index < indexPath.section; index++)
+    {
+        row += [[[sectionDetails objectAtIndex:index] objectForKey:@"Rows"] intValue];
+    }
+    row += indexPath.row;
+    return row;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -241,11 +423,7 @@
         [self performSegueWithIdentifier:@"EditContact" sender:indexPath];
     else if (tableView == contactsTable)
     {
-        for (int index = 0; index < indexPath.section; index++)
-        {
-            row += [[[sectionDetails objectAtIndex:index] objectForKey:@"Rows"] intValue];
-        }
-        row += indexPath.row;
+        row = [self getRowFromSectionDetails:indexPath];
         NSIndexPath *indexPathSection = [NSIndexPath indexPathForRow:row inSection:indexPath.section];
         [self performSegueWithIdentifier:@"EditContact" sender:indexPathSection];
     }
@@ -262,11 +440,7 @@
     }
     else if (tableView == contactsTable)
     {
-        for (int index = 0; index < indexPath.section; index++)
-        {
-            row += [[[sectionDetails objectAtIndex:index] objectForKey:@"Rows"] intValue];
-        }
-        row += indexPath.row;
+        row = [self getRowFromSectionDetails:indexPath];
         contactObject = [contactArray objectAtIndex:row];
     }
 
@@ -280,7 +454,7 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (tableView == contactsTable)
+    if (tableView == contactsTable || tableView == searchDisplayController.searchResultsTableView)
     {
         static NSString *CellIdentifier = @"ContactTableViewCell";
         ContactTableViewCell *cell = (ContactTableViewCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
@@ -300,16 +474,11 @@
         }
         else if (tableView == contactsTable)
         {
-            for (int index = 0; index < indexPath.section; index++)
-            {
-                row += [[[sectionDetails objectAtIndex:index] objectForKey:@"Rows"] intValue];
-            }
-            row += indexPath.row;
+            row = [self getRowFromSectionDetails:indexPath];
             contactObject = [contactArray objectAtIndex:row];
         }
 
         NDLog(@"ContactsVCtrl: cellForRow[%d] : contact = %@",(int)[indexPath row],contactObject);
-
         //Move the first / last name labels if they have no photo
         if([[contactObject userThumbnail] length] > 10)
         {
@@ -436,14 +605,10 @@
             }
             else if (tableView == contactsTable)
             {
-                for (int index = 0; index < indexPath.section; index++)
-                {
-                    row += [[[sectionDetails objectAtIndex:index] objectForKey:@"Rows"] intValue];
-                }
-                row += indexPath.row;
+                row = [self getRowFromSectionDetails:indexPath];
                 contactObject = [contactArray objectAtIndex:row];
             }
-            NDLog(@"ContactsVCtrl: Delete : contact[%ld] = %@",(long)[indexPath row],contactObject);
+            NDLog(@"ContactsVCtrl: Delete : contact[%d] = %@",(int)[indexPath row],contactObject);
             [ContactModel deleteContact:contactObject];
             [self populateContacts:NO];
             [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObjects:indexPath, nil] withRowAnimation:UITableViewRowAnimationFade];
@@ -476,4 +641,5 @@
     NSLog(@"ContactsVCtrl: didReceiveMemoryWarning : ERROR");
     [super didReceiveMemoryWarning];
 }
+
 @end

@@ -5,6 +5,10 @@
 //  Created by Pat Murphy on 5/18/14.
 //  Copyright (c) 2014 Fitamatic All rights reserved.
 //
+//  Info : Just displays detailed information about a ContactObject which it obtains from the
+//  Contacts table. Uses static TableViewCells for entering the Contact information, thus no
+//  cellForRowAtIndexPath.
+//
 
 #import <UIKit/UIKit.h>
 #import "ContactModel.h"
