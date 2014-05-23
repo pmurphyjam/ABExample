@@ -65,7 +65,8 @@
                                              label:[SettingsModel getUserName]
                                              value:nil] build];
     [[AppAnalytics sharedInstance].defaultTracker send:event];
-    
+    [[AppAnalytics sharedInstance].defaultTracker set:kGAIScreenName value:@"ContactsVCtrl"];
+
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateContacts) name:CONTACTS_UPDATE_NOTIFICATION object:nil];
     
     if([SettingsModel getLoginState])
