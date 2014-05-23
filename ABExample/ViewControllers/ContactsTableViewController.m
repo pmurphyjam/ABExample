@@ -25,6 +25,7 @@
 @property(nonatomic,strong) NSMutableArray *indexArray;
 @property(nonatomic,strong) NSIndexPath *indexPathToShowSelection;
 @property(nonatomic,strong) NSString *currentSearchString;
+
 @end
 
 
