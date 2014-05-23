@@ -29,7 +29,6 @@
 
 @end
 
-
 @implementation ContactsTableViewController
 
 @synthesize contactsTable;
@@ -44,6 +43,8 @@
 
 //#define DEBUG
 #import "AppConstants.h"
+
+#define LABEL_Y_INCR         21.0
 
 - (void)viewDidLoad
 {
@@ -93,6 +94,7 @@
 
 - (void)viewWillDisappear:(BOOL)animated
 {
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:CONTACTS_UPDATE_NOTIFICATION object:nil];
     [super viewWillDisappear:animated];
 }
 
@@ -202,13 +204,13 @@
 
 - (void)searchBarCancelButtonClicked:(UISearchBar *)searchBarInst
 {
-    NDLog(@"CompanyVCtrl : searchBarCancelButtonClicked ");
+    NDLog(@"ContactsVCtrl : searchBarCancelButtonClicked ");
     [searchBar setText:@""];
     [searchDisplayController setActive:NO animated:YES];
     [searchBar resignFirstResponder];
     contactSearchArray = [ContactModel getContactsForView];
     [contactsTable reloadData];
-    NDLog(@"CompanyVCtrl : searchBarCancelButtonClicked : searchBar = %@",NSStringFromCGRect(searchBar.frame));
+    NDLog(@"ContactsVCtrl : searchBarCancelButtonClicked : searchBar = %@",NSStringFromCGRect(searchBar.frame));
 }
 
 -(BOOL)searchBarShouldBeginEditing:(UISearchBar *)aSearchBar
@@ -223,13 +225,13 @@
 
 - (void)searchBarTextDidEndEditing:(UISearchBar *)aSearchBar
 {
-    NDLog(@"CompanyVCtrl : searchBarTextDidEndEditing ");
+    NDLog(@"ContactsVCtrl : searchBarTextDidEndEditing ");
     [searchBar resignFirstResponder];
 }
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText
 {
-    NDLog(@"CompanyVCtrl : searchBar : textDidChange");
+    NDLog(@"ContactsVCtrl : searchBar : textDidChange");
     if ([searchText isEqualToString:@""])
     {
         [contactsTable reloadData];
@@ -462,9 +464,9 @@
     }
 
     int numberOfItems = (int)[[contactObject numberOfItems] integerValue];
-    CGFloat height = 85;
+    CGFloat height = 85.0;
     if(numberOfItems > 3)
-        height = height + (numberOfItems - 3) * 21;
+        height = height + (numberOfItems - 3) * LABEL_Y_INCR;
     
     return height;
 }
@@ -529,7 +531,7 @@
             [[cell address] setHidden:NO];
             [[cell address] setText:[contactObject address]];
             labelRect = cell.address.frame;
-            labelRect.origin.y  = labelRect.origin.y + 21;
+            labelRect.origin.y  = labelRect.origin.y + LABEL_Y_INCR;
         }
         else
             [[cell address] setHidden:YES];
@@ -540,7 +542,7 @@
             [[cell city] setHidden:NO];
             cell.city.frame = labelRect;
             [[cell city] setText:[contactObject city]];
-            labelRect.origin.y  = labelRect.origin.y + 21;
+            labelRect.origin.y  = labelRect.origin.y + LABEL_Y_INCR;
         }
         else
             [[cell city] setHidden:YES];
@@ -550,7 +552,7 @@
             [[cell state] setHidden:NO];
             cell.state.frame = labelRect;
             [[cell state] setText:[contactObject state]];
-            labelRect.origin.y  = labelRect.origin.y + 21;
+            labelRect.origin.y  = labelRect.origin.y + LABEL_Y_INCR;
         }
         else
             [[cell state] setHidden:YES];
@@ -560,7 +562,7 @@
             [[cell phoneNumber] setHidden:NO];
             cell.phoneNumber.frame = labelRect;
             [[cell phoneNumber] setText:[contactObject phoneNumber]];
-            labelRect.origin.y  = labelRect.origin.y + 21;
+            labelRect.origin.y  = labelRect.origin.y + LABEL_Y_INCR;
         }
         else
             [[cell phoneNumber] setHidden:YES];
@@ -571,7 +573,7 @@
             [[cell emailAddress] setHidden:NO];
             cell.emailAddress.frame = labelRect;
             [[cell emailAddress] setText:[contactObject emailAddress]];
-            labelRect.origin.y  = labelRect.origin.y + 21;
+            labelRect.origin.y  = labelRect.origin.y + LABEL_Y_INCR;
         }
         else
             [[cell emailAddress] setHidden:YES];
@@ -582,7 +584,7 @@
             [[cell company] setHidden:NO];
             cell.company.frame = labelRect;
             [[cell company] setText:[contactObject company]];
-            labelRect.origin.y  = labelRect.origin.y + 21;
+            labelRect.origin.y  = labelRect.origin.y + LABEL_Y_INCR;
         }
         else
             [[cell company] setHidden:YES];

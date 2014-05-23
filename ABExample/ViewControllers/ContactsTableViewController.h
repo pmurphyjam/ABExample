@@ -7,10 +7,10 @@
 //
 //  Info : Contacts Table View controller. Uses a UISearchDisplayController for searching
 //  for First or Last mames. Also adds indexing for quick scrolling to a desired contact.
-//  Table view is sectionalized for indexing.
-//  The AopDelete uses the ABContacts library to read your iphone Address Book, and these
-//  contacts are then displayed in this table view controller. A contact is an single
-//  phone number or email address.
+//  Table view is sectionalized for indexing, and has alpha section headers.
+//  The Address Book contact count is checked in viewWillAppear, if it is different, the
+//  Address Book is processed again, thus the table view should always show what's in
+//  your Address Book. A contact is counted as an single phone number or email address.
 //
 
 #import <UIKit/UIKit.h>
