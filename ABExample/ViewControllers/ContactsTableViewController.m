@@ -15,6 +15,7 @@
 #import "ContactObject.h"
 #import "AppDebugLog.h"
 #import "SettingsModel.h"
+#import "ABContactsHelper.h"
 
 @interface ContactsTableViewController ()
 
@@ -65,6 +66,21 @@
     [[AppAnalytics sharedInstance].defaultTracker send:event];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateContacts) name:CONTACTS_UPDATE_NOTIFICATION object:nil];
+    
+    if([SettingsModel getLoginState])
+    {
+        BOOL contactAccessGranted = [ABContactsHelper getAccessToContacts];
+        BOOL updateContacts = [ContactModel updateContactsRequired];
+        [SettingsModel setProcessingContacts:NO];
+        NDLog(@"ContactsVCtrl : contactAccessGranted = %@ : updateContacts = %@",contactAccessGranted?@"YES":@"NO",updateContacts?@"YES":@"NO");
+        
+        if(updateContacts && contactAccessGranted && [SettingsModel getProcessingContacts] == NO)
+        {
+            //Goes through the users address book since there's been a contact change
+            [ContactModel getUserContactsFromAddressBook];
+        }
+    }
+    
     [self populateContacts:YES];
 }
 

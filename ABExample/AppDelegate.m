@@ -14,7 +14,6 @@
 #import "NSDictionary+JSONCategory.h"
 #import "DeviceUtils.h"
 #import "AppDebugLog.h"
-#import "ABContactsHelper.h"
 #import "ContactModel.h"
 #import <CommonCrypto/CommonDigest.h>
 #import <AdSupport/AdSupport.h>
@@ -46,17 +45,6 @@
     //Upload CrashData if we have some, and process the users Address Book
     if([SettingsModel getLoginState])
     {
-        BOOL contactAccessGranted = [ABContactsHelper getAccessToContacts];
-        BOOL updateContacts = [ContactModel updateContactsRequired];
-        [SettingsModel setProcessingContacts:NO];
-        NSLog(@"AppDel : contactAccessGranted = %@ : updateContacts = %@",contactAccessGranted?@"YES":@"NO",updateContacts?@"YES":@"NO");
-
-        if(updateContacts && contactAccessGranted && [SettingsModel getProcessingContacts] == NO)
-        {
-            //Goes through the users address book
-            [ContactModel getUserContactsFromAddressBook];
-        }
-
         //If the App crashed it will come here, and see if there is any Stack Traces to upload to the Server
         BOOL crashDataExists = [AppManager crashDataExists];
         if(crashDataExists)
