@@ -23,7 +23,7 @@
 {
     NSMutableString *sql = [NSMutableString string];
 	NSMutableArray *parameters = [NSMutableArray array];
-	[sql appendString:@" insert into Contacts (sync_bit,sync_delete,sync_datetime,firstName,lastName,nameHash,emailAddress,emailHash,phoneNumber,phoneHash, accountID,contactID,company,address,city,state,numberOfItems,modificationDate,userThumbnail) values(?,?,?"];
+	[sql appendString:@" insert into Contacts (sync_bit,sync_delete,sync_datetime,firstName,lastName,birthDate,nameHash,emailAddress,emailHash,phoneNumber,phoneHash, accountID,contactID,company,address,city,state,numberOfItems,modificationDate,userThumbnail) values(?,?,?"];
     [parameters addObject:[NSNumber numberWithBool:YES]];
     [parameters addObject:[NSNumber numberWithBool:NO]];
     [parameters addObject:[AppManager UTCDateTime]];
@@ -49,6 +49,16 @@
         [sql appendString:@",NULL"];
     }
     
+    if([[contactObject birthDate] length] > 0)
+    {
+        [parameters addObject:[contactObject birthDate]];
+        [sql appendString:@",?"];
+    }
+    else
+    {
+        [sql appendString:@",NULL"];
+    }
+
     if([[contactObject nameHash] length] > 0)
     {
         [parameters addObject:[contactObject nameHash]];
@@ -374,6 +384,12 @@
                 [contactObject setNameHash:[self getMD5HashedValue:[NSString stringWithFormat:@"%@%@",[contact firstname],[contact lastname]]]];
 
                 int numberOfItems = 2;
+
+                if([contact birthday] != nil)
+                {
+                    [contactObject setBirthDate:[AppManager getBirthDatefromDate:[contact birthday]]];
+                    numberOfItems++;
+                }
 
                 if([[contact lastname] length] < 1 && [[contact firstname] length] < 1)
                     continue;
