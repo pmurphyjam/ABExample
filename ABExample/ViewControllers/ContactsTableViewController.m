@@ -52,7 +52,7 @@
     NDLog(@"ContactsVCtrl: viewDidLoad ");
     contactArray = [[NSMutableArray alloc] init];
     indexArray = [NSMutableArray arrayWithObjects:@"A",@"B",@"C",@"D",@"E",@"F",@"G",@"H",@"I",@"J",@"K",@"L",@"M",@"N",@"O",@"P",@"Q",@"R",@"S",@"T",@"U",@"V",@"W",@"X",@"Y",@"Z", nil];
-    
+    [[UITableView appearance] setSectionIndexBackgroundColor:[UIColor clearColor]];
     [searchBar setPlaceholder:@"Search for a Contact"];
 }
 
