@@ -22,5 +22,6 @@
 +(BOOL)updateContactsRequired;
 +(BOOL)getUserContactsFromAddressBook;
 +(NSString*)getMD5HashedValue:(NSString*)value;
++(BOOL)doesContactExistForEmailHash:(NSString*)emailHash;
 
 @end

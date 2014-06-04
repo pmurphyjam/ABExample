@@ -318,6 +318,15 @@
     return status;
 }
 
++(BOOL)doesContactExistForEmailHash:(NSString*)emailHash
+{
+    BOOL status = NO;
+    NSMutableArray *contactArray = [[AppManager DataAccess] GetRecordsForQuery:@" select emailHash from Contacts where emailHash = ? ",emailHash,nil];
+    if([contactArray count] > 0)
+        status = YES;
+    return status;
+}
+
 +(NSString*)getMD5HashedValueForPhone:(NSString*)phoneNumber
 {
     //Need to get just the decimal numbers from the phone number

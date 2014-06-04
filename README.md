@@ -11,7 +11,8 @@ This ABExample reads the users AddressBook, and then displays them. You can dele
 but they will not be deleted from the users AddressBook. This ABExample will work for a user which has 
 a large number of Contacts in excess of 20K or more. The Contacts Table View supports alpha section headers, 
 deleting, updating, indexing for quick scrolling, and searching using a UISearchDisplayController for 
-searching first and last name.
+searching first and last name. In addition the App displays the users current Calendar Events, and displays
+events that have attendees, and are not all day events.
 
 Uses ABContact which works with ARC and makes reading the iPhone AddressBook easy.
 Note : If your coping this you will have to pull this library and copy it into the ABExample\ABContacts folder.

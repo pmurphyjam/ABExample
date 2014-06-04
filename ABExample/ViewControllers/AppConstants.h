@@ -10,8 +10,6 @@
 //  Developer should define their own meaningful debug logs, like NTXLog for all transmit events, etc.
 //
 
-#import <Foundation/Foundation.h>
-
 #define ServerUrl @"http://your.company.com/"
 #define ServerDomain "yahoo.com"
 
@@ -34,6 +32,8 @@
 
 //Notifications
 #define CONTACTS_UPDATE_NOTIFICATION    @"ContactsUpdateNotification"
+#define CALENDAR_UPDATE_NOTIFICATION    @"CalendarUpdateNotification"
+
 
 //#define DEBUG
 #ifdef DEBUG
@@ -69,3 +69,12 @@
 #else
 #    define NCRLog(...)
 #endif
+
+//#define DEBUGCAL
+#ifdef DEBUGCAL
+#    define NCALLog(...) NSLog(__VA_ARGS__)
+#else
+#    define NCALLog(...)
+#endif
+
+

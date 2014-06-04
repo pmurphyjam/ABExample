@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5056" systemVersion="13D65" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" useAutolayout="YES" initialViewController="qUu-Nn-jq7">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5056" systemVersion="13D65" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" useAutolayout="YES" initialViewController="RaJ-54-zDg">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
     </dependencies>
     <scenes>
-        <!--Contacts Table View Controller - ABExample-->
+        <!--Contacts Table View Controller - Address Book-->
         <scene sceneID="dXe-1U-w67">
             <objects>
                 <tableViewController id="WkX-rO-54t" customClass="ContactsTableViewController" sceneMemberID="viewController">
@@ -38,7 +38,7 @@
                             <outlet property="delegate" destination="WkX-rO-54t" id="1dx-C9-Kwv"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="ABExample" id="MkP-WH-qZt">
+                    <navigationItem key="navigationItem" title="Address Book" id="MkP-WH-qZt">
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="O3Q-4F-olp">
                             <connections>
                                 <segue destination="aPK-TL-uoA" kind="modal" identifier="AddContact" id="bAr-lc-V1e"/>
@@ -63,6 +63,79 @@
                 </searchDisplayController>
             </objects>
             <point key="canvasLocation" x="400" y="660"/>
+        </scene>
+        <!--Calendar Table View Controller - Calendar Events-->
+        <scene sceneID="Xtz-2Z-dMw">
+            <objects>
+                <tableViewController id="bzG-Ks-Fjq" customClass="CalendarTableViewController" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="XLv-j1-oBw">
+                        <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <searchBar key="tableHeaderView" contentMode="redraw" id="YVK-NG-UXb">
+                            <rect key="frame" x="0.0" y="64" width="768" height="44"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                            <textInputTraits key="textInputTraits"/>
+                            <connections>
+                                <outlet property="delegate" destination="bzG-Ks-Fjq" id="CDe-R7-nP1"/>
+                            </connections>
+                        </searchBar>
+                        <prototypes>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" id="ObS-1l-cPd" customClass="CalendarTableViewCell">
+                                <rect key="frame" x="0.0" y="130" width="768" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="ObS-1l-cPd" id="O7f-MO-6PW">
+                                    <rect key="frame" x="0.0" y="0.0" width="768" height="43"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="bzG-Ks-Fjq" id="rQM-I4-ipH"/>
+                            <outlet property="delegate" destination="bzG-Ks-Fjq" id="tV0-yl-m3z"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" title="Calendar Events" id="NHv-AS-YNw">
+                        <barButtonItem key="rightBarButtonItem" title="Today" id="wYr-cI-Jud">
+                            <connections>
+                                <action selector="todayButtonAction:" destination="bzG-Ks-Fjq" id="bMh-sw-qRr"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="calendarTable" destination="XLv-j1-oBw" id="OKj-Px-GTX"/>
+                        <outlet property="searchBar" destination="YVK-NG-UXb" id="Br2-33-Bgq"/>
+                        <outlet property="searchDisplayController" destination="BwH-AR-XzU" id="VAR-ZE-SDn"/>
+                    </connections>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="uqB-tZ-tZe" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <searchDisplayController id="BwH-AR-XzU">
+                    <connections>
+                        <outlet property="delegate" destination="bzG-Ks-Fjq" id="6Q8-Vr-tUv"/>
+                        <outlet property="searchBar" destination="YVK-NG-UXb" id="8oK-vx-dea"/>
+                        <outlet property="searchContentsController" destination="bzG-Ks-Fjq" id="kHh-Ez-7dY"/>
+                        <outlet property="searchResultsDataSource" destination="bzG-Ks-Fjq" id="5RV-SU-a0y"/>
+                        <outlet property="searchResultsDelegate" destination="bzG-Ks-Fjq" id="4hp-M6-fsH"/>
+                    </connections>
+                </searchDisplayController>
+            </objects>
+            <point key="canvasLocation" x="400" y="1836"/>
+        </scene>
+        <!--Navigation Controller - Calendar Events-->
+        <scene sceneID="xRy-vS-jOH">
+            <objects>
+                <navigationController definesPresentationContext="YES" id="gbz-Gh-pzq" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Calendar Events" image="Calendar.png" id="bUG-BZ-Nuf"/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="Qt8-xI-gCt">
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="bzG-Ks-Fjq" kind="relationship" relationship="rootViewController" id="B2j-7F-fnj"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Kzv-xY-PKW" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-582" y="1836"/>
         </scene>
         <!--Contact Detail Table View Controller - Add Contact-->
         <scene sceneID="UnN-1h-cXA">
@@ -297,10 +370,30 @@
             </objects>
             <point key="canvasLocation" x="1332" y="660"/>
         </scene>
-        <!--Navigation Controller-->
+        <!--Tab Bar Controller-->
+        <scene sceneID="YuV-ew-HoI">
+            <objects>
+                <tabBarController definesPresentationContext="YES" id="RaJ-54-zDg" sceneMemberID="viewController">
+                    <nil key="simulatedBottomBarMetrics"/>
+                    <tabBar key="tabBar" contentMode="scaleToFill" id="HNS-dS-NSR">
+                        <rect key="frame" x="129" y="330" width="163" height="49"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                    </tabBar>
+                    <connections>
+                        <segue destination="qUu-Nn-jq7" kind="relationship" relationship="viewControllers" id="NHs-1R-dCR"/>
+                        <segue destination="gbz-Gh-pzq" kind="relationship" relationship="viewControllers" id="2gY-Du-mrk"/>
+                    </connections>
+                </tabBarController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="fW2-tD-8JV" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1576" y="1285"/>
+        </scene>
+        <!--Navigation Controller - Address Book-->
         <scene sceneID="ckL-oJ-IzM">
             <objects>
                 <navigationController definesPresentationContext="YES" id="qUu-Nn-jq7" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Address Book" image="AddressBookIcon.png" id="s3F-jZ-PO2"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="2WW-Yk-WFo">
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
@@ -313,6 +406,10 @@
             <point key="canvasLocation" x="-582" y="660"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="AddressBookIcon.png" width="29" height="29"/>
+        <image name="Calendar.png" width="29" height="29"/>
+    </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>
