@@ -29,12 +29,13 @@
 {
     //Set some fake passwords for now, these are required for SQLCipher and encryption since the passwords
     //are always used for the encryption keys plus some salt
-    [SettingsModel setPW0:@"1260793RTgu"];
-    [SettingsModel setDS0:[AppManager getSomeDSfromDate:[NSDate date]]];
-    [SettingsModel setPW1:@"1260793RTgu"];
-    [SettingsModel setDS1:[AppManager getSomeDSfromDate:[NSDate date]]];
+    [SettingsModel setDBPW0:@"1260793RTgu"];
+    [SettingsModel setDBDS0:[AppManager getSomeDSfromDate:[NSDate date]]];
+    [SettingsModel setDBPW1:@"1260793RTgu"];
+    [SettingsModel setDBDS1:[AppManager getSomeDSfromDate:[NSDate date]]];
     [SettingsModel setLoginState:YES];
     [SettingsModel setUserName:@"John Smith"];
+    [SettingsModel setUserId:[NSNumber numberWithInt:1]];
     [SettingsModel setCountry:@"USA"];
     [AppManager InitializeAppManager];
     //Open the Database. Typically you wouldn't do this until a user has enter a password first
@@ -158,12 +159,12 @@
             if (error != nil)
             {
                 NSLog(@"AppDelChat : Crash Data Internet Connection Error");
-                [AppDebugLog writeDebugData:[NSString stringWithFormat:@"Crash Data Internet Connection Error"]];
+                [[AppDebugLog appDebug] writeDebugData:[NSString stringWithFormat:@"Crash Data Internet Connection Error"]];
             }
             else if (!status)
             {
                 NSLog(@"AppDelChat : Crash Data Connection Error");
-                [AppDebugLog writeDebugData:[NSString stringWithFormat:@"Crash Data Connection Error"]];
+                [[AppDebugLog appDebug] writeDebugData:[NSString stringWithFormat:@"Crash Data Connection Error"]];
             }
             else
             {

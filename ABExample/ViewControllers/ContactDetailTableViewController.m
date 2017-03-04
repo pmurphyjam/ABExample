@@ -226,7 +226,7 @@
 - (void)didReceiveMemoryWarning
 {
     [AppManager currentMemoryConsumption:[NSString stringWithUTF8String:__PRETTY_FUNCTION__]];
-    [AppDebugLog writeDebugData:[NSString stringWithFormat:@"ContactDetailVCtrl : didReceiveMemoryWarning"]];
+    [[AppDebugLog appDebug] writeDebugData:[NSString stringWithFormat:@"ContactDetailVCtrl : didReceiveMemoryWarning"]];
     NSLog(@"ContactDetailVCtrl : didReceiveMemoryWarning : ERROR");
     [super didReceiveMemoryWarning];
 }

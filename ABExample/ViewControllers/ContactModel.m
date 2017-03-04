@@ -10,8 +10,9 @@
 #import "AppManager.h"
 #import "ContactConvertor.h"
 #import "NSData+Category.h"
-#import "ABContact.h"
-#import "ABContactsHelper.h"
+//#import "ABContact.h"
+//#import "ABContactsHelper.h"
+#import <Contacts/Contacts.h>
 #import "DeviceUtils.h"
 #import "SettingsModel.h"
 
@@ -350,12 +351,40 @@
     return hashedValue;
 }
 
++(int)getValidContactsCount
+{
+    int __block intValue = 0;
+    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+    CNContactStore *store = [[CNContactStore alloc] init];
+    [store requestAccessForEntityType:CNEntityTypeContacts completionHandler:^(BOOL granted, NSError * _Nullable error)
+     {
+         if (granted == YES)
+         {
+             NSArray *keys = @[CNContactBirthdayKey,CNContactFamilyNameKey, CNContactGivenNameKey, CNContactPostalAddressesKey, CNContactOrganizationNameKey, CNContactPhoneNumbersKey, CNContactImageDataKey, CNContactEmailAddressesKey];
+             NSString *containerId = store.defaultContainerIdentifier;
+             NSPredicate *predicate = [CNContact predicateForContactsInContainerWithIdentifier:containerId];
+             NSError *error;
+             NSArray *contacts = [store unifiedContactsMatchingPredicate:predicate keysToFetch:keys error:&error];
+             for (CNContact *contact in contacts)
+             {
+                 intValue += [[contact phoneNumbers] count];
+                 intValue += [[contact emailAddresses] count];
+             }
+             NCONLog(@"ContactModel : getValidContactsCount : intValue = %i ",intValue);
+             dispatch_semaphore_signal(semaphore);
+         }
+     }];
+    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+    NCONLog(@"ContactModel : getValidContactsCount : return : intValue = %i ",intValue);
+    return intValue;
+}
+
 +(BOOL)updateContactsRequired
 {
     BOOL status = NO;
     int savedContactsCount = [[SettingsModel getTotalUserContacts] intValue];
-    int currentContactsCount = [ABContactsHelper validContactsCount];
-    NCONLog(@"savedContactsCount = %i currentContactsCount = %i",savedContactsCount,currentContactsCount);
+    int currentContactsCount = [self getValidContactsCount];
+    NCONLog(@"ContactModel : savedContactsCount = %i currentContactsCount = %i",savedContactsCount,currentContactsCount);
     if(savedContactsCount != currentContactsCount || savedContactsCount==0)
         status = YES;
     return status;
@@ -365,248 +394,275 @@
 {
     BOOL __block status = NO;
     [SettingsModel setProcessingContacts:YES];
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        @autoreleasepool
-        {
-            [SettingsModel setStartDateTimeStamp:[AppManager UTCDateTime] forIndex:0];
-            NSArray *contacts = [ABContactsHelper contacts];
-            NSMutableArray *contactsTransaction = [[NSMutableArray alloc] init];
-            NSMutableArray *uniqueContacts = [[NSMutableArray alloc] init];
-            
-            NCONLog(@"ContactModel : CALLED : Contacts : contacts count = %d",[contacts count]);
-            //This get's all the Contacts so they can be checked for duplicates
-            NSMutableArray *contactsToBeDeleted = [self getUserContactIDHashes];
-            NSMutableArray *contactsToKeep = [[NSMutableArray alloc] init];
-            
-            int total = 0;
-            //Sets the total number of transactions inserted at one time into DB
-            //Newer devices can handle more, older devices can not, it's a memory limitation
-            int totalTransactions = 200;
-            for (ABContact *contact in contacts)
-            {
-                BOOL foundPhoneForContact = NO;
-                NCONLog(@"ContactModel : insertUserContacts : contact = %@ %@ : Date = %@",[contact firstname],[contact lastname],[contact modificationDate]);
-                ContactObject *contactObject = [[ContactObject alloc] init];
-                [contactObject setFirstName:[contact firstname]];
-                [contactObject setLastName:[contact lastname]];
-                [contactObject setModificationDate:[AppManager getUTCDateTimeForDate:[contact modificationDate]]];
-                [contactObject setNameHash:[self getMD5HashedValue:[NSString stringWithFormat:@"%@%@",[contact firstname],[contact lastname]]]];
-
-                int numberOfItems = 2;
-
-                if([contact birthday] != nil)
+    CNContactStore *store = [[CNContactStore alloc] init];
+    [store requestAccessForEntityType:CNEntityTypeContacts completionHandler:^(BOOL granted, NSError * _Nullable error)
+     {
+         if (granted == YES)
+         {
+             //keys with fetching properties
+             int totalContacts = 0;
+             NSArray *keys = @[CNContactBirthdayKey,CNContactFamilyNameKey, CNContactGivenNameKey, CNContactPostalAddressesKey, CNContactOrganizationNameKey, CNContactPhoneNumbersKey, CNContactImageDataKey, CNContactEmailAddressesKey];
+             NSString *containerId = store.defaultContainerIdentifier;
+             NSPredicate *predicate = [CNContact predicateForContactsInContainerWithIdentifier:containerId];
+             NSError *error;
+             NSArray *contacts = [store unifiedContactsMatchingPredicate:predicate keysToFetch:keys error:&error];
+             if (error)
+             {
+                 NELog(@"ContactModel : error fetching contacts %@", error.description);
+             }
+             else
+             {
+                @autoreleasepool
                 {
-                    [contactObject setBirthDate:[AppManager getBirthDatefromDate:[contact birthday]]];
-                    numberOfItems++;
-                }
-
-                if([[contact lastname] length] < 1 && [[contact firstname] length] < 1)
-                    continue;
-                
-                //If no lastname use firstname so alphabetization works properly
-                if([[contact lastname] length] == 0)
-                    [contactObject setLastName:[contact firstname]];
-                
-                if([[contact imageData] length] > 10)
-                {
-                    NSData *imageData = [NSData scaleDataImage:[contact imageData] toSize:CONTACT_IMAGE_SIZE];
-                    [contactObject setUserThumbnail:imageData];
-                    imageData = nil;
-                }
-                
-                //Get the Company
-                if([[contact organization] length] > 0)
-                {
-                    [contactObject setCompany:[contact organization]];
-                    numberOfItems++;
-                }
-
-                //Get the Address
-                NSArray *addressArray = [contact addressArray];
-                if([addressArray count] > 0)
-                    numberOfItems = numberOfItems + 3;
-
-                for(NSDictionary * addressDic in addressArray)
-                {
-                    [contactObject setAddress:[addressDic objectForKey:@"Street"]];
-                    [contactObject setState:[addressDic objectForKey:@"State"]];
-                    [contactObject setCity:[addressDic objectForKey:@"City"]];
-                }
-
-                NCONLog(@"ContactModel : Name : %@ %@ numberOfItems = %d", contactObject.firstName,contactObject.lastName, numberOfItems);
-
-                NSArray *phoneArray = [contact phoneArray];
-                NCONLog(@"ContactModel : Name: %@  %@ : PhoneArray[%d] : %@", contactObject.firstName,contactObject.lastName, [phoneArray count],phoneArray);
-                if([phoneArray count] > 0)
-                {
-                    [contactObject setEmailAddress:nil];
-                    [contactObject setEmailHash:nil];
+                    [SettingsModel setStartDateTimeStamp:[AppManager UTCDateTime] forIndex:0];
+                    NSMutableArray *contactsTransaction = [[NSMutableArray alloc] init];
+                    NSMutableArray *uniqueContacts = [[NSMutableArray alloc] init];
                     
-                    for(NSString *phone in phoneArray)
+                    NCONLog(@"ContactModel : CALLED : Contacts : contacts count = %ld",[contacts count]);
+                    //This get's all the Contacts so they can be checked for duplicates
+                    NSMutableArray *contactsToBeDeleted = [self getUserContactIDHashes];
+                    NSMutableArray *contactsToKeep = [[NSMutableArray alloc] init];
+                    
+                    int total = 0;
+                    //Sets the total number of transactions inserted at one time into DB
+                    //Newer devices can handle more, older devices can not, it's a memory limitation
+                    int totalTransactions = 200;
+                    for (CNContact *contact in contacts)
                     {
-                        //Make sure everything gets released for a user with 1000's of contacts
-                        @autoreleasepool
-                        {
-                            foundPhoneForContact = YES;
-                            NCONLog(@"ContactModel : Name : PHONE : %@ %@ : Phone : %@", contactObject.firstName,contactObject.lastName, phone);
-                            
-                            [contactObject setPhoneNumber:phone];
-                            //Would actually get country from Phone number type here
-                            //Also need to make sure we use just real phone numbers here or the MD5
-                            //will always return the same value
-                            NSString *phoneMD5 = [self getMD5HashedValueForPhone:phone];
-                            [contactObject setPhoneHash:phoneMD5];
-                            [contactObject setContactID:phoneMD5];
-                            
-                            if([uniqueContacts indexOfObject:phoneMD5] == NSNotFound)
-                            {
-                                numberOfItems++;
-                                [contactObject setNumberOfItems:[NSNumber numberWithInt:numberOfItems]];
-                                NCONLog(@"ContactModel : Name : PHONE : %@ %@ -- numberOfItems = %d", contactObject.firstName,contactObject.lastName, numberOfItems);
-                                [uniqueContacts addObject:phoneMD5];
-                                
-                                BOOL contactIDExists = [self doesContactExistForContactID:phoneMD5];
-                                if(contactIDExists)
-                                {
-                                    NSArray *contactsToRemove = [NSArray arrayWithObject:[NSDictionary dictionaryWithObject:phoneMD5 forKey:@"hash"]];
-                                    phoneMD5 = nil;
-                                    [contactsToBeDeleted removeObjectsInArray:contactsToRemove];
-                                    BOOL updateContact = [self doesContactNeedUpdating:contactObject];
-                                    BOOL updateContactModificationDate = [self doesContactModificationDateNeedUpdating:contactObject];
-                                    NCONLog(@"ContactModel : Name : PHONE : contact Name -->'%@ %@' : updateContact = %@: updateDate = %@",[contact firstname],[contact lastname],updateContact?@"YES":@"NO",updateContactModificationDate?@"YES":@"NO");
-                                    
-                                    if(updateContact || updateContactModificationDate)
-                                    {
-                                        status = [self updateContact:contactObject];
-                                        NCONLog(@"ContactModel : Name : PHONE : UPDATE contact Name -->'%@ %@'",[contact firstname],[contact lastname]);
-                                    }
-                                    else
-                                    {
-                                        NCONLog(@"ContactModel : Name : PHONE : DID NOT CHANGE -->'%@ %@'",[contact firstname],[contact lastname]);
-                                    }
-                                }
-                                else
-                                {
-                                    NSDictionary *sqlAndParamsForTransaction = [self insertContactsSQL:contactObject];
-                                    NCONLog(@"ContactModel : Name : PHONE : INSERT : contactsTransaction ADDED");
-                                    [contactsTransaction addObject:sqlAndParamsForTransaction];
-                                    total++;
-                                    if ( total > totalTransactions )
-                                    {
-                                        total = 0 ;
-                                        [[AppManager DataAccess] ExecuteTransaction:contactsTransaction];
-                                        NCONLog(@"ContactModel : Name : PHONE : UPDATE contactsTransaction 1");
-                                        contactsTransaction = [[NSMutableArray alloc] init];
-                                    }
-                                }
-                                numberOfItems--;
-                                [contactObject setNumberOfItems:[NSNumber numberWithInt:numberOfItems]];
-                            }
-                        }//autoreleasepool
-                    }
-                }
-                phoneArray = nil;
-                NSArray *emailArray = [contact emailArray];
-                NCONLog(@"ContactModel : Name: %@  %@ : EmailArray[%d] : %@", contactObject.firstName,contactObject.lastName, [emailArray count],emailArray);
-                if([emailArray count] > 0 && foundPhoneForContact!=YES)
-                {
-                    [contactObject setPhoneNumber:nil];
-                    [contactObject setPhoneHash:nil];
-                    for(NSString * email in emailArray)
-                    {
-                        //Make sure everything gets released for a user with 1000's of contacts
-                        @autoreleasepool
-                        {
-                            [contactObject setEmailAddress:email];
-                            NSString *emailMD5 = [DeviceUtils hashedValue:email uppercase:NO];
-                            [contactObject setEmailHash:emailMD5];
-                            [contactObject setContactID:emailMD5];
-                            
-                            NCONLog(@"ContactModel : Name : EMAIL : %@ -- Phone: %@", contactObject.firstName, email);
-                            NCONLog(@"ContactModel : Name : EMAIL : %@ -- Stripped Phone: %@", contactObject.lastName, emailMD5);
-                            
-                            if([uniqueContacts indexOfObject:emailMD5] == NSNotFound)
-                            {
-                                numberOfItems++;
-                                [contactObject setNumberOfItems:[NSNumber numberWithInt:numberOfItems]];
-                                NCONLog(@"ContactModel : Name : EMAIL : %@ -- numberOfItems = %d", contactObject.firstName, numberOfItems);
+                        BOOL foundPhoneForContact = NO;
+                        NCONLog(@"ContactModel : insertUserContacts : contact = %@ %@ ",[contact givenName],[contact familyName]);
+                        ContactObject *contactObject = [[ContactObject alloc] init];
+                        [contactObject setFirstName:[contact givenName]];
+                        [contactObject setLastName:[contact familyName]];
+                        //[contactObject setModificationDate:[AppManager getUTCDateTimeForDate:[contact modificationDate]]];
+                        [contactObject setNameHash:[self getMD5HashedValue:[NSString stringWithFormat:@"%@%@",[contact givenName],[contact familyName]]]];
 
-                                [uniqueContacts addObject:emailMD5];
-                                
-                                BOOL contactIDExists = [self doesContactExistForContactID:emailMD5];
-                                if(contactIDExists)
-                                {
-                                    NSArray *contactsToRemove = [NSArray arrayWithObject:[NSDictionary dictionaryWithObject:emailMD5 forKey:@"hash"]];
-                                    [contactsToBeDeleted removeObjectsInArray:contactsToRemove];
-                                    emailMD5 = nil;
-                                    BOOL updateContact = [self doesContactNeedUpdating:contactObject];
-                                    BOOL updateContactModificationDate = [self doesContactModificationDateNeedUpdating:contactObject];
-                                    NCONLog(@"ContactModel : Name : EMAIL : contact Name -->'%@ %@' : updateContact = %@: updateDate = %@",[contact firstname],[contact lastname],updateContact?@"YES":@"NO",updateContactModificationDate?@"YES":@"NO");
-                                    
-                                    if(updateContact || updateContactModificationDate)
-                                    {
-                                        status = [self updateContact:contactObject];
-                                        NCONLog(@"ContactModel : Name : EMAIL : UPDATE contact Name -->'%@ %@'",[contact firstname],[contact lastname]);
-                                    }
-                                    else
-                                    {
-                                        NCONLog(@"ContactModel : Name : EMAIL : DID NOT CHANGE -->'%@ %@'",[contact firstname],[contact lastname]);
-                                    }
-                                }
-                                else
-                                {
-                                    NSDictionary *sqlAndParamsForTransaction = [self insertContactsSQL:contactObject];
-                                    NCONLog(@"ContactModel : Name : EMAIL : INSERT : contactsTransaction ADDED");
-                                    [contactsTransaction addObject:sqlAndParamsForTransaction];
-                                    total++;
-                                    if ( total > totalTransactions )
-                                    {
-                                        total = 0 ;
-                                        [[AppManager DataAccess] ExecuteTransaction:contactsTransaction];
-                                        NCONLog(@"ContactModel : Name : EMAIL : UPDATE contactsTransaction 2 ");
-                                        contactsTransaction = [[NSMutableArray alloc] init];
-                                    }
-                                }
-                                numberOfItems--;
-                                [contactObject setNumberOfItems:[NSNumber numberWithInt:numberOfItems]];
+                        int numberOfItems = 2;
+
+                        if([contact birthday] != nil)
+                        {
+                            [contactObject setBirthDate:[AppManager getBirthDatefromDate:[[contact birthday] date]]];
+                            numberOfItems++;
+                        }
+
+                        if([[contact familyName] length] < 1 && [[contact givenName] length] < 1)
+                            continue;
+                        
+                        //If no lastname use firstname so alphabetization works properly
+                        if([[contact familyName] length] == 0)
+                            [contactObject setLastName:[contact givenName]];
+                        
+                        if([[contact imageData] length] > 10)
+                        {
+                            NSData *imageData = [NSData scaleDataImage:[contact imageData] toSize:CONTACT_IMAGE_SIZE];
+                            [contactObject setUserThumbnail:imageData];
+                            imageData = nil;
+                        }
+                        
+                        //Get the Company
+                        if([contact organizationName] != nil)
+                        {
+                            if([[contact organizationName] length] > 0)
+                            {
+                                [contactObject setCompany:[contact organizationName]];
+                                numberOfItems++;
                             }
                         }
-                    }//autoreleasepool
+
+                        //Get the Address
+                        NSArray *addressArray = [contact postalAddresses];
+                        if([addressArray count] > 0)
+                            numberOfItems = numberOfItems + 3;
+
+                        NSArray *addresses = (NSArray*)[contact.postalAddresses valueForKey:@"value"];
+                        if (addresses.count > 0) {
+                            for (CNPostalAddress *address in addresses)
+                            {
+                                [contactObject setAddress:[address street]];
+                                [contactObject setState:[address state]];
+                                [contactObject setCity:[address city]];
+                            }
+                        }
+                        
+                        NCONLog(@"ContactModel : Name : %@ %@ numberOfItems = %d", contactObject.firstName,contactObject.lastName, numberOfItems);
+
+                        NSArray *phoneArray = [contact phoneNumbers];
+                        NCONLog(@"ContactModel : Name: %@  %@ : PhoneArray[%ld] : %@", contactObject.firstName,contactObject.lastName, [phoneArray count],phoneArray);
+                        if([phoneArray count] > 0)
+                        {
+                            //totalContacts += [phoneArray count];
+                            [contactObject setEmailAddress:nil];
+                            [contactObject setEmailHash:nil];
+                            
+                            for(CNLabeledValue<CNPhoneNumber*> *phone in phoneArray)
+                            {
+                                //Make sure everything gets released for a user with 1000's of contacts
+                                @autoreleasepool
+                                {
+                                    foundPhoneForContact = YES;
+                                    NCONLog(@"ContactModel : Name : PHONE : %@ %@ : Phone : %@", contactObject.firstName,contactObject.lastName, [[phone value] stringValue]);
+                                    
+                                    [contactObject setPhoneNumber:[[phone value] stringValue]];
+                                    //Would actually get country from Phone number type here
+                                    //Also need to make sure we use just real phone numbers here or the MD5
+                                    //will always return the same value
+                                    NSString *phoneMD5 = [self getMD5HashedValueForPhone:[[phone value] stringValue]];
+                                    [contactObject setPhoneHash:phoneMD5];
+                                    [contactObject setContactID:phoneMD5];
+                                    totalContacts++;
+                                    NCONLog(@"ContactModel : Name : %@ %@ : totalContacts : %d", contactObject.firstName,contactObject.lastName, totalContacts);
+                                    if([uniqueContacts indexOfObject:phoneMD5] == NSNotFound)
+                                    {
+                                        numberOfItems++;
+                                        [contactObject setNumberOfItems:[NSNumber numberWithInt:numberOfItems]];
+                                        NCONLog(@"ContactModel : Name : PHONE : %@ %@ -- numberOfItems = %d", contactObject.firstName,contactObject.lastName, numberOfItems);
+                                        [uniqueContacts addObject:phoneMD5];
+                                        
+                                        BOOL contactIDExists = [self doesContactExistForContactID:phoneMD5];
+                                        if(contactIDExists)
+                                        {
+                                            NSArray *contactsToRemove = [NSArray arrayWithObject:[NSDictionary dictionaryWithObject:phoneMD5 forKey:@"hash"]];
+                                            phoneMD5 = nil;
+                                            [contactsToBeDeleted removeObjectsInArray:contactsToRemove];
+                                            BOOL updateContact = [self doesContactNeedUpdating:contactObject];
+                                            BOOL updateContactModificationDate = [self doesContactModificationDateNeedUpdating:contactObject];
+                                            NCONLog(@"ContactModel : Name : PHONE : contact Name -->'%@ %@' : updateContact = %@: updateDate = %@",[contact givenName],[contact familyName],updateContact?@"YES":@"NO",updateContactModificationDate?@"YES":@"NO");
+                                            
+                                            if(updateContact || updateContactModificationDate)
+                                            {
+                                                status = [self updateContact:contactObject];
+                                                NCONLog(@"ContactModel : Name : PHONE : UPDATE contact Name -->'%@ %@'",[contact givenName],[contact familyName]);
+                                            }
+                                            else
+                                            {
+                                                NCONLog(@"ContactModel : Name : PHONE : DID NOT CHANGE -->'%@ %@'",[contact givenName],[contact familyName]);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            NSDictionary *sqlAndParamsForTransaction = [self insertContactsSQL:contactObject];
+                                            NCONLog(@"ContactModel : Name : PHONE : INSERT : contactsTransaction ADDED");
+                                            [contactsTransaction addObject:sqlAndParamsForTransaction];
+                                            total++;
+                                            if ( total > totalTransactions )
+                                            {
+                                                total = 0 ;
+                                                [[AppManager DataAccess] ExecuteTransaction:contactsTransaction];
+                                                NCONLog(@"ContactModel : Name : PHONE : UPDATE contactsTransaction 1");
+                                                contactsTransaction = [[NSMutableArray alloc] init];
+                                            }
+                                        }
+                                        numberOfItems--;
+                                        [contactObject setNumberOfItems:[NSNumber numberWithInt:numberOfItems]];
+                                    }
+                                }//autoreleasepool
+                            }
+                        }
+                        phoneArray = nil;
+                        NSArray *emailArray = [contact emailAddresses];
+                        NCONLog(@"ContactModel : Name: %@  %@ : EmailArray[%ld] : %@", contactObject.firstName,contactObject.lastName, [emailArray count],emailArray);
+                        if([emailArray count] > 0 && foundPhoneForContact!=YES)
+                        {
+                            //totalContacts += [emailArray count];
+                            [contactObject setPhoneNumber:nil];
+                            [contactObject setPhoneHash:nil];
+                            for(CNLabeledValue *email in emailArray)
+                            {
+                                //Make sure everything gets released for a user with 1000's of contacts
+                                @autoreleasepool
+                                {
+                                    [contactObject setEmailAddress:[email value]];
+                                    NSString *emailMD5 = [DeviceUtils hashedValue:[email value] uppercase:NO];
+                                    [contactObject setEmailHash:emailMD5];
+                                    [contactObject setContactID:emailMD5];
+                                    totalContacts++;
+                                    NCONLog(@"ContactModel : Name : EMAIL : %@ -- Phone: %@", contactObject.firstName, [email value]);
+                                    NCONLog(@"ContactModel : Name : EMAIL : %@ -- Stripped Phone: %@", contactObject.lastName, emailMD5);
+                                    NCONLog(@"ContactModel : Name : %@ %@ : totalContacts : %d", contactObject.firstName,contactObject.lastName, totalContacts);
+                                    if([uniqueContacts indexOfObject:emailMD5] == NSNotFound)
+                                    {
+                                        numberOfItems++;
+                                        [contactObject setNumberOfItems:[NSNumber numberWithInt:numberOfItems]];
+                                        NCONLog(@"ContactModel : Name : EMAIL : %@ -- numberOfItems = %d", contactObject.firstName, numberOfItems);
+
+                                        [uniqueContacts addObject:emailMD5];
+                                        
+                                        BOOL contactIDExists = [self doesContactExistForContactID:emailMD5];
+                                        if(contactIDExists)
+                                        {
+                                            NSArray *contactsToRemove = [NSArray arrayWithObject:[NSDictionary dictionaryWithObject:emailMD5 forKey:@"hash"]];
+                                            [contactsToBeDeleted removeObjectsInArray:contactsToRemove];
+                                            emailMD5 = nil;
+                                            BOOL updateContact = [self doesContactNeedUpdating:contactObject];
+                                            BOOL updateContactModificationDate = [self doesContactModificationDateNeedUpdating:contactObject];
+                                            NCONLog(@"ContactModel : Name : EMAIL : contact Name -->'%@ %@' : updateContact = %@: updateDate = %@",[contact givenName],[contact familyName],updateContact?@"YES":@"NO",updateContactModificationDate?@"YES":@"NO");
+                                            
+                                            if(updateContact || updateContactModificationDate)
+                                            {
+                                                status = [self updateContact:contactObject];
+                                                NCONLog(@"ContactModel : Name : EMAIL : UPDATE contact Name -->'%@ %@'",[contact givenName],[contact familyName]);
+                                            }
+                                            else
+                                            {
+                                                NCONLog(@"ContactModel : Name : EMAIL : DID NOT CHANGE -->'%@ %@'",[contact givenName],[contact familyName]);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            NSDictionary *sqlAndParamsForTransaction = [self insertContactsSQL:contactObject];
+                                            NCONLog(@"ContactModel : Name : EMAIL : INSERT : contactsTransaction ADDED");
+                                            [contactsTransaction addObject:sqlAndParamsForTransaction];
+                                            total++;
+                                            if ( total > totalTransactions )
+                                            {
+                                                total = 0 ;
+                                                [[AppManager DataAccess] ExecuteTransaction:contactsTransaction];
+                                                NCONLog(@"ContactModel : Name : EMAIL : UPDATE contactsTransaction 2 ");
+                                                contactsTransaction = [[NSMutableArray alloc] init];
+                                            }
+                                        }
+                                        numberOfItems--;
+                                        [contactObject setNumberOfItems:[NSNumber numberWithInt:numberOfItems]];
+                                    }
+                                }
+                            }//autoreleasepool
+                        }
+                        emailArray = nil;
+                        NCONLog(@"ContactModel : contactObject : %@ ",contactObject);
+                    }
+                    //remove contacts that are no longer in the Users Address Book
+                    //You need this to get rid of duplicates and contacts that have been deleted from the Users Address Book
+                    //Otherwise the user will always have contacts showing they've deleted which is not good.
+                    //Note : We never insert a new Address Book Contact if it is using an already existing Phone # or Email Address
+                    [contactsToBeDeleted removeObjectsInArray:contactsToKeep];
+                    
+                    for (NSDictionary *hashToDeleteDic in contactsToBeDeleted)
+                    {
+                        //This shows you who you are deleting, just for debug
+                        NCONLog(@"ContactModel : deleteUserContactForContactID : usersDeleting = %@",[self getContactsForHash:[hashToDeleteDic objectForKey:@"hash"]]);
+                        [self deleteUserContactForContactID:[hashToDeleteDic objectForKey:@"hash"]];
+                        NCONLog(@"ContactModel : deleteUserContactsForContactID hashToDelete : %@",[hashToDeleteDic objectForKey:@"hash"]);
+                    }
+                    
+                    if([contactsTransaction count] > 0)
+                    {
+                        //Transaction Insert
+                        status = [[AppManager DataAccess] ExecuteTransaction:contactsTransaction];
+                        NCONLog(@"ContactModel : UPDATE contactsTransaction : status = %@ ",status?@"YES":@"NO");
+                    }
+                    
+                    [SettingsModel setTotalUserContacts:[NSNumber numberWithInt:totalContacts]];
+                    [SettingsModel setFinishDateTimeStamp:[AppManager UTCDateTime] forIndex:0];
+                    NCONLog(@"ContactModel : Finished Insert [%ld] : time = %f",[contactsTransaction count],[SettingsModel getStartToFinishTimeForIndex:0]);
+                    
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        //Send a notification to the Contacts view to reload
+                        [[NSNotificationCenter defaultCenter] postNotificationName:CONTACTS_UPDATE_NOTIFICATION object:nil];
+                    });
                 }
-                emailArray = nil;
-                NCONLog(@"ContactModel : contactObject : %@ ",contactObject);
             }
-            //remove contacts that are no longer in the Users Address Book
-            //You need this to get rid of duplicates and contacts that have been deleted from the Users Address Book
-            //Otherwise the user will always have contacts showing they've deleted which is not good.
-            //Note : We never insert a new Address Book Contact if it is using an already existing Phone # or Email Address
-            [contactsToBeDeleted removeObjectsInArray:contactsToKeep];
-            
-            for (NSDictionary *hashToDeleteDic in contactsToBeDeleted)
-            {
-                //This shows you who you are deleting, just for debug
-                NCONLog(@"ContactModel : deleteUserContactForContactID : usersDeleting = %@",[self getContactsForHash:[hashToDeleteDic objectForKey:@"hash"]]);
-                [self deleteUserContactForContactID:[hashToDeleteDic objectForKey:@"hash"]];
-                NCONLog(@"ContactModel : deleteUserContactsForContactID hashToDelete : %@",[hashToDeleteDic objectForKey:@"hash"]);
-            }
-            
-            if([contactsTransaction count] > 0)
-            {
-                //Transaction Insert
-                status = [[AppManager DataAccess] ExecuteTransaction:contactsTransaction];
-                NCONLog(@"ContactModel : UPDATE contactsTransaction : status = %@ ",status?@"YES":@"NO");
-            }
-            
-            [SettingsModel setTotalUserContacts:[NSNumber numberWithInt:[ABContactsHelper validContactsCount]]];
-            [SettingsModel setFinishDateTimeStamp:[AppManager UTCDateTime] forIndex:0];
-            NCONLog(@"ContactModel : Finished Insert [%d] : time = %f",[contactsTransaction count],[SettingsModel getStartToFinishTimeForIndex:0]);
-            
-            dispatch_async(dispatch_get_main_queue(), ^{
-                //Send a notification to the Contacts view to reload
-                [[NSNotificationCenter defaultCenter] postNotificationName:CONTACTS_UPDATE_NOTIFICATION object:nil];
-            });
-        }
-    });
+         } // YES
+    }];
     [SettingsModel setProcessingContacts:NO];
 	return status;
 }

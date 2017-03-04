@@ -15,7 +15,9 @@
 #import "ContactObject.h"
 #import "AppDebugLog.h"
 #import "SettingsModel.h"
-#import "ABContactsHelper.h"
+#import <Contacts/Contacts.h>
+
+//#import "ABContactsHelper.h"
 
 @interface ContactsTableViewController ()
 
@@ -41,7 +43,7 @@
 @synthesize indexPathToShowSelection;
 @synthesize currentSearchString;
 
-//#define DEBUG
+#define DEBUG
 #import "AppConstants.h"
 
 #define LABEL_Y_INCR         21.0
@@ -71,7 +73,7 @@
     
     if([SettingsModel getLoginState])
     {
-        BOOL contactAccessGranted = [ABContactsHelper getAccessToContacts];
+        BOOL contactAccessGranted = YES;// [ABContactsHelper getAccessToContacts];
         BOOL updateContacts = [ContactModel updateContactsRequired];
         [SettingsModel setProcessingContacts:NO];
         NDLog(@"ContactsVCtrl : contactAccessGranted = %@ : updateContacts = %@",contactAccessGranted?@"YES":@"NO",updateContacts?@"YES":@"NO");
@@ -600,10 +602,13 @@
         else
             [[cell birthDate] setHidden:YES];
         
-        [[cell userThumbnail] setImage:[UIImage imageWithData:[contactObject userThumbnail]] forState:UIControlStateNormal];
-        [cell.userThumbnail.layer setCornerRadius:cell.userThumbnail.frame.size.width / 2];
-        [cell.userThumbnail setClipsToBounds:YES];
-        [cell.userThumbnail setHidden:NO];
+        if([[contactObject userThumbnail] length] > 0)
+        {
+            [[cell userThumbnail] setImage:[UIImage imageWithData:[contactObject userThumbnail]] forState:UIControlStateNormal];
+            [cell.userThumbnail.layer setCornerRadius:cell.userThumbnail.frame.size.width / 2];
+            [cell.userThumbnail setClipsToBounds:YES];
+            [cell.userThumbnail setHidden:NO];
+        }
 
         return cell;
     }
@@ -657,7 +662,7 @@
 - (void)didReceiveMemoryWarning
 {
     [AppManager currentMemoryConsumption:[NSString stringWithUTF8String:__PRETTY_FUNCTION__]];
-    [AppDebugLog writeDebugData:[NSString stringWithFormat:@"ContactsVCtrl: didReceiveMemoryWarning"]];
+    [[AppDebugLog appDebug] writeDebugData:[NSString stringWithFormat:@"ContactsVCtrl: didReceiveMemoryWarning"]];
     NSLog(@"ContactsVCtrl: didReceiveMemoryWarning : ERROR");
     [super didReceiveMemoryWarning];
 }

@@ -609,7 +609,7 @@
 - (void)didReceiveMemoryWarning
 {
     [AppManager currentMemoryConsumption:[NSString stringWithUTF8String:__PRETTY_FUNCTION__]];
-    [AppDebugLog writeDebugData:[NSString stringWithFormat:@"CalendarVCtrl: didReceiveMemoryWarning"]];
+    [[AppDebugLog appDebug] writeDebugData:[NSString stringWithFormat:@"CalendarVCtrl: didReceiveMemoryWarning"]];
     NSLog(@"CalendarVCtrl: didReceiveMemoryWarning : ERROR");
     [super didReceiveMemoryWarning];
 }

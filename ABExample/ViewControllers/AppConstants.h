@@ -49,14 +49,14 @@
 #    define NSQLog(...)
 #endif
 
-//#define DEBUGDB
+#define DEBUGDB
 #ifdef DEBUGDB
 #    define NSDBLog(...) NSLog(__VA_ARGS__)
 #else
 #    define NSDBLog(...)
 #endif
 
-//#define DEBUGCON
+#define DEBUGCON
 #ifdef DEBUGCON
 #    define NCONLog(...) NSLog(__VA_ARGS__)
 #else
@@ -77,4 +77,10 @@
 #    define NCALLog(...)
 #endif
 
+#define DEBUGERROR
+#ifdef DEBUGERROR
+#    define NELog(...) NSLog(__VA_ARGS__)
+#else
+#    define NELog(...)
+#endif
 

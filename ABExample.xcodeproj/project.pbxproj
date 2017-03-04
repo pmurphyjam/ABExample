@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 48;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -21,15 +21,10 @@
 		711BF26A19298172002D2514 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 711BF24919298172002D2514 /* UIKit.framework */; };
 		711BF27219298172002D2514 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 711BF27019298172002D2514 /* InfoPlist.strings */; };
 		711BF27419298172002D2514 /* ABExampleTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 711BF27319298172002D2514 /* ABExampleTests.m */; };
-		711BF28C192985C2002D2514 /* ABContact.m in Sources */ = {isa = PBXBuildFile; fileRef = 711BF287192985C2002D2514 /* ABContact.m */; };
-		711BF28D192985C2002D2514 /* ABContactsHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 711BF289192985C2002D2514 /* ABContactsHelper.m */; };
-		711BF28E192985C2002D2514 /* ABGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = 711BF28B192985C2002D2514 /* ABGroup.m */; };
 		711BF290192985D7002D2514 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 711BF28F192985D7002D2514 /* README.md */; };
 		711BF29B192985ED002D2514 /* AppAnalytics.m in Sources */ = {isa = PBXBuildFile; fileRef = 711BF292192985ED002D2514 /* AppAnalytics.m */; };
 		711BF29C192985ED002D2514 /* AppAnalyticsTrackerVCtrl.m in Sources */ = {isa = PBXBuildFile; fileRef = 711BF294192985ED002D2514 /* AppAnalyticsTrackerVCtrl.m */; };
 		711BF29E19298606002D2514 /* libGoogleAnalyticsServices.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 711BF29D19298606002D2514 /* libGoogleAnalyticsServices.a */; };
-		711BF2A61929865B002D2514 /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 711BF29F1929865B002D2514 /* AddressBook.framework */; };
-		711BF2A71929865B002D2514 /* AddressBookUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 711BF2A01929865B002D2514 /* AddressBookUI.framework */; };
 		711BF2A81929865B002D2514 /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 711BF2A11929865B002D2514 /* AdSupport.framework */; };
 		711BF2A91929865B002D2514 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 711BF2A21929865B002D2514 /* CFNetwork.framework */; };
 		711BF2AA1929865B002D2514 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 711BF2A31929865B002D2514 /* CoreData.framework */; };
@@ -96,6 +91,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1A7E6B2E1E69F10E004C4C23 /* GAIEcommerceFields.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GAIEcommerceFields.h; path = AppIOS/Analytics/Google/GAIEcommerceFields.h; sourceTree = SOURCE_ROOT; };
+		1A7E6B2F1E69F10E004C4C23 /* GAIEcommerceProduct.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GAIEcommerceProduct.h; path = AppIOS/Analytics/Google/GAIEcommerceProduct.h; sourceTree = SOURCE_ROOT; };
+		1A7E6B301E69F10E004C4C23 /* GAIEcommerceProductAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GAIEcommerceProductAction.h; path = AppIOS/Analytics/Google/GAIEcommerceProductAction.h; sourceTree = SOURCE_ROOT; };
+		1A7E6B311E69F10E004C4C23 /* GAIEcommercePromotion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GAIEcommercePromotion.h; path = AppIOS/Analytics/Google/GAIEcommercePromotion.h; sourceTree = SOURCE_ROOT; };
 		711BF24219298172002D2514 /* ABExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ABExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		711BF24519298172002D2514 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		711BF24719298172002D2514 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -114,12 +113,6 @@
 		711BF26F19298172002D2514 /* ABExampleTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "ABExampleTests-Info.plist"; sourceTree = "<group>"; };
 		711BF27119298172002D2514 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		711BF27319298172002D2514 /* ABExampleTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ABExampleTests.m; sourceTree = "<group>"; };
-		711BF286192985C2002D2514 /* ABContact.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ABContact.h; path = ABContacts/ABContact.h; sourceTree = SOURCE_ROOT; };
-		711BF287192985C2002D2514 /* ABContact.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ABContact.m; path = ABContacts/ABContact.m; sourceTree = SOURCE_ROOT; };
-		711BF288192985C2002D2514 /* ABContactsHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ABContactsHelper.h; path = ABContacts/ABContactsHelper.h; sourceTree = SOURCE_ROOT; };
-		711BF289192985C2002D2514 /* ABContactsHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ABContactsHelper.m; path = ABContacts/ABContactsHelper.m; sourceTree = SOURCE_ROOT; };
-		711BF28A192985C2002D2514 /* ABGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ABGroup.h; path = ABContacts/ABGroup.h; sourceTree = SOURCE_ROOT; };
-		711BF28B192985C2002D2514 /* ABGroup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ABGroup.m; path = ABContacts/ABGroup.m; sourceTree = SOURCE_ROOT; };
 		711BF28F192985D7002D2514 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = README.md; path = ABContacts/README.md; sourceTree = SOURCE_ROOT; };
 		711BF291192985ED002D2514 /* AppAnalytics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppAnalytics.h; path = AppIOS/Analytics/Google/AppAnalytics.h; sourceTree = SOURCE_ROOT; };
 		711BF292192985ED002D2514 /* AppAnalytics.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppAnalytics.m; path = AppIOS/Analytics/Google/AppAnalytics.m; sourceTree = SOURCE_ROOT; };
@@ -226,8 +219,6 @@
 				7168A12D193CD4C100613F90 /* EventKit.framework in Frameworks */,
 				711BF2EB192990B6002D2514 /* SystemConfiguration.framework in Frameworks */,
 				711BF2AE1929867B002D2514 /* Security.framework in Frameworks */,
-				711BF2A61929865B002D2514 /* AddressBook.framework in Frameworks */,
-				711BF2A71929865B002D2514 /* AddressBookUI.framework in Frameworks */,
 				711BF2A81929865B002D2514 /* AdSupport.framework in Frameworks */,
 				711BF2A91929865B002D2514 /* CFNetwork.framework in Frameworks */,
 				711BF2AA1929865B002D2514 /* CoreData.framework in Frameworks */,
@@ -298,7 +289,6 @@
 			isa = PBXGroup;
 			children = (
 				711BF28219298556002D2514 /* ReadMe */,
-				711BF27D1929850A002D2514 /* ABContacts */,
 				711BF27E19298520002D2514 /* Analytics */,
 				711BF27F19298533002D2514 /* Categories */,
 				711BF2801929853D002D2514 /* AppControls */,
@@ -346,19 +336,6 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		711BF27D1929850A002D2514 /* ABContacts */ = {
-			isa = PBXGroup;
-			children = (
-				711BF286192985C2002D2514 /* ABContact.h */,
-				711BF287192985C2002D2514 /* ABContact.m */,
-				711BF288192985C2002D2514 /* ABContactsHelper.h */,
-				711BF289192985C2002D2514 /* ABContactsHelper.m */,
-				711BF28A192985C2002D2514 /* ABGroup.h */,
-				711BF28B192985C2002D2514 /* ABGroup.m */,
-			);
-			name = ABContacts;
-			sourceTree = "<group>";
-		};
 		711BF27E19298520002D2514 /* Analytics */ = {
 			isa = PBXGroup;
 			children = (
@@ -368,6 +345,10 @@
 				711BF294192985ED002D2514 /* AppAnalyticsTrackerVCtrl.m */,
 				711BF295192985ED002D2514 /* GAI.h */,
 				711BF296192985ED002D2514 /* GAIDictionaryBuilder.h */,
+				1A7E6B2E1E69F10E004C4C23 /* GAIEcommerceFields.h */,
+				1A7E6B2F1E69F10E004C4C23 /* GAIEcommerceProduct.h */,
+				1A7E6B301E69F10E004C4C23 /* GAIEcommerceProductAction.h */,
+				1A7E6B311E69F10E004C4C23 /* GAIEcommercePromotion.h */,
 				711BF297192985ED002D2514 /* GAIFields.h */,
 				711BF298192985ED002D2514 /* GAILogger.h */,
 				711BF299192985ED002D2514 /* GAITrackedViewController.h */,
@@ -551,6 +532,7 @@
 				711BF23F19298172002D2514 /* Frameworks */,
 				711BF24019298172002D2514 /* Resources */,
 				711BF2EC192990C8002D2514 /* Run Script */,
+				1A7E6B321E69F2C9004C4C23 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -594,7 +576,7 @@
 				};
 			};
 			buildConfigurationList = 711BF23D19298172002D2514 /* Build configuration list for PBXProject "ABExample" */;
-			compatibilityVersion = "Xcode 3.2";
+			compatibilityVersion = "Xcode 8.0";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -652,6 +634,19 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		1A7E6B321E69F2C9004C4C23 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "#Force Xcode 8 to recompile after a build\ntouch ${SRCROOT}/ABExample/ViewControllers/CalendarTableViewController.m ABExample/ViewControllers/ContactDetailTableViewController.m\nexit $?";
+		};
 		711BF2EC192990C8002D2514 /* Run Script */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -678,10 +673,8 @@
 				711BF2B8192986AA002D2514 /* NSDictionary+JSONCategory.m in Sources */,
 				7197D21A193CE2AC00470CC2 /* CalendarTableViewCell.m in Sources */,
 				711BF2B7192986A9002D2514 /* NSData+Category.m in Sources */,
-				711BF28C192985C2002D2514 /* ABContact.m in Sources */,
 				7197D21E193CEA4600470CC2 /* UIColor+Category.m in Sources */,
 				711BF2DB192986EB002D2514 /* DeviceUtils.m in Sources */,
-				711BF28D192985C2002D2514 /* ABContactsHelper.m in Sources */,
 				711BF29B192985ED002D2514 /* AppAnalytics.m in Sources */,
 				711BF2EF1929ABBE002D2514 /* ContactConvertor.m in Sources */,
 				711BF25619298172002D2514 /* AppDelegate.m in Sources */,
@@ -697,7 +690,6 @@
 				711BF2E819298FF1002D2514 /* AppConstants.m in Sources */,
 				711BF29C192985ED002D2514 /* AppAnalyticsTrackerVCtrl.m in Sources */,
 				7168A125193CD25F00613F90 /* CalendarModel.m in Sources */,
-				711BF28E192985C2002D2514 /* ABGroup.m in Sources */,
 				711BF2F51929AC07002D2514 /* ContactObject.m in Sources */,
 				7136EC52192BB1D20062AB6A /* ContactTableViewCell.m in Sources */,
 				711BF2D7192986EB002D2514 /* AppDebugLog.m in Sources */,
@@ -843,6 +835,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				DEVELOPMENT_TEAM = QJ7DWU7T8P;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(DEVELOPER_FRAMEWORKS_DIR)",
@@ -865,6 +858,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				DEVELOPMENT_TEAM = QJ7DWU7T8P;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(DEVELOPER_FRAMEWORKS_DIR)",
