@@ -21,7 +21,6 @@
 		711BF26A19298172002D2514 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 711BF24919298172002D2514 /* UIKit.framework */; };
 		711BF27219298172002D2514 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 711BF27019298172002D2514 /* InfoPlist.strings */; };
 		711BF27419298172002D2514 /* ABExampleTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 711BF27319298172002D2514 /* ABExampleTests.m */; };
-		711BF290192985D7002D2514 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 711BF28F192985D7002D2514 /* README.md */; };
 		711BF29B192985ED002D2514 /* AppAnalytics.m in Sources */ = {isa = PBXBuildFile; fileRef = 711BF292192985ED002D2514 /* AppAnalytics.m */; };
 		711BF29C192985ED002D2514 /* AppAnalyticsTrackerVCtrl.m in Sources */ = {isa = PBXBuildFile; fileRef = 711BF294192985ED002D2514 /* AppAnalyticsTrackerVCtrl.m */; };
 		711BF29E19298606002D2514 /* libGoogleAnalyticsServices.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 711BF29D19298606002D2514 /* libGoogleAnalyticsServices.a */; };
@@ -113,7 +112,6 @@
 		711BF26F19298172002D2514 /* ABExampleTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "ABExampleTests-Info.plist"; sourceTree = "<group>"; };
 		711BF27119298172002D2514 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		711BF27319298172002D2514 /* ABExampleTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ABExampleTests.m; sourceTree = "<group>"; };
-		711BF28F192985D7002D2514 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = README.md; path = ABContacts/README.md; sourceTree = SOURCE_ROOT; };
 		711BF291192985ED002D2514 /* AppAnalytics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppAnalytics.h; path = AppIOS/Analytics/Google/AppAnalytics.h; sourceTree = SOURCE_ROOT; };
 		711BF292192985ED002D2514 /* AppAnalytics.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppAnalytics.m; path = AppIOS/Analytics/Google/AppAnalytics.m; sourceTree = SOURCE_ROOT; };
 		711BF293192985ED002D2514 /* AppAnalyticsTrackerVCtrl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppAnalyticsTrackerVCtrl.h; path = AppIOS/Analytics/Google/AppAnalyticsTrackerVCtrl.h; sourceTree = SOURCE_ROOT; };
@@ -415,7 +413,6 @@
 		711BF28219298556002D2514 /* ReadMe */ = {
 			isa = PBXGroup;
 			children = (
-				711BF28F192985D7002D2514 /* README.md */,
 				711BF2DF19298EB0002D2514 /* README.md */,
 				711BF2E119298EB9002D2514 /* README.md */,
 			);
@@ -607,7 +604,6 @@
 				711BF26119298172002D2514 /* Images.xcassets in Resources */,
 				715602C1193E4FFA007E4048 /* Calendar.png in Resources */,
 				711BF2E219298EB9002D2514 /* README.md in Resources */,
-				711BF290192985D7002D2514 /* README.md in Resources */,
 				711BF25919298172002D2514 /* Main_iPhone.storyboard in Resources */,
 				712EF1DB192C675B004C9CE4 /* Apple.png in Resources */,
 				711BF2E519298F51002D2514 /* Contacts.db in Resources */,
