@@ -14,9 +14,6 @@ deleting, updating, indexing for quick scrolling, and searching using a UISearch
 searching first and last name. In addition the App displays the users current Calendar Events, and displays
 events that have attendees, and are not all day events.
 
-Uses ABContact which works with ARC and makes reading the iPhone AddressBook easy.
-Note : If your coping this you will have to pull this library and copy it into the ABExample\ABContacts folder.
-
 Uses AppIOS submodule which has SQLite infrastructure for accessing an SQLite database.
 Note : If your coping this you will have to pull this library and copy it into the ABExample\AppIOS folder.
 

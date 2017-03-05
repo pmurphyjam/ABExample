@@ -17,8 +17,6 @@
 #import "SettingsModel.h"
 #import <Contacts/Contacts.h>
 
-//#import "ABContactsHelper.h"
-
 @interface ContactsTableViewController ()
 
 @property(nonatomic,strong) IBOutlet UITableView *contactsTable;
@@ -73,16 +71,20 @@
     
     if([SettingsModel getLoginState])
     {
-        BOOL contactAccessGranted = YES;// [ABContactsHelper getAccessToContacts];
-        BOOL updateContacts = [ContactModel updateContactsRequired];
-        [SettingsModel setProcessingContacts:NO];
-        NDLog(@"ContactsVCtrl : contactAccessGranted = %@ : updateContacts = %@",contactAccessGranted?@"YES":@"NO",updateContacts?@"YES":@"NO");
-        
-        if(updateContacts && contactAccessGranted && [SettingsModel getProcessingContacts] == NO)
-        {
-            //Goes through the users address book since there's been a contact change
-            [ContactModel getUserContactsFromAddressBook];
-        }
+        //Do this so Contacts alert shows up on main thread
+        dispatch_async(dispatch_get_main_queue(),^{
+
+            BOOL contactAccessGranted = [ContactModel getAccessToContacts];
+            BOOL updateContacts = [ContactModel updateContactsRequired];
+            [SettingsModel setProcessingContacts:NO];
+            NDLog(@"ContactsVCtrl : contactAccessGranted = %@ : updateContacts = %@",contactAccessGranted?@"YES":@"NO",updateContacts?@"YES":@"NO");
+            
+            if(updateContacts && contactAccessGranted && [SettingsModel getProcessingContacts] == NO)
+            {
+                //Goes through the users address book since there's been a contact change
+                [ContactModel getUserContactsFromAddressBook];
+            }
+        });
     }
     
     [self populateContacts:YES];

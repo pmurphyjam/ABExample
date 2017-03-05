@@ -438,6 +438,7 @@ static EKEventStore *eventStore;
                     // You can use the event store now
                     [SettingsModel setCalendarAuthorization:YES];
                     NCALLog(@"CalendarModel : getCalendarAuthorization : GRANTED");
+                    [CalendarModel getCalendarEvents];
                 });
             }
         }];
@@ -447,6 +448,7 @@ static EKEventStore *eventStore;
         // You can use the event store now
         [SettingsModel setCalendarAuthorization:YES];
         NCALLog(@"CalendarModel : getCalendarAuthorization : AUTHORIZED");
+        [CalendarModel getCalendarEvents];
     }
     else
     {
@@ -475,9 +477,19 @@ static EKEventStore *eventStore;
             if([[existingEvent attendees] count] > 0)
             {
                 BOOL allDayEvent = [existingEvent isAllDay];
-                int participants = [[existingEvent attendees] count];
-                //Don't store all day events because their usually Holidays unless they have more than 2 participants
-                if(!allDayEvent || (allDayEvent && participants > 2))
+                BOOL hasAttendees = NO;
+                BOOL canInsertiCalEvent = NO;
+
+                if([[existingEvent attendees] count] > 0)
+                    hasAttendees = YES;
+                
+                if(allDayEvent && !hasAttendees)
+                    canInsertiCalEvent = NO;
+                else
+                    canInsertiCalEvent = YES;
+                
+                //Don't insert all day iCal events since their holidays and they always have no attendees
+                if(canInsertiCalEvent)
                 {
                     calendarCount++;
                 }
@@ -496,7 +508,7 @@ static EKEventStore *eventStore;
         int currentEventsCount = [self validCalendarEventCount];
         if((savedEventsCount != currentEventsCount) || savedEventsCount == 0)
             status = YES;
-        NCALLog(@"CalendarModel : updateCalendarRequired = %@ : savedEventsCount = %d currentEventsCount = %d",status?@"YES":@"NO",savedEventsCount,currentEventsCount);
+        NSLog(@"CalendarModel : updateCalendarRequired = %@ : savedEventsCount = %d currentEventsCount = %d",status?@"YES":@"NO",savedEventsCount,currentEventsCount);
     }
     return status;
 }

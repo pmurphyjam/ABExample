@@ -47,7 +47,7 @@
 @synthesize todaysIndexPath;
 @synthesize haveToday;
 
-//#define DEBUG
+#define DEBUG
 #import "AppConstants.h"
 
 #define LABEL_Y_INCR         21.0
@@ -87,15 +87,19 @@
     
     if([SettingsModel getLoginState])
     {
-        BOOL contactAccessGranted = YES;
-        BOOL updateContacts = [CalendarModel updateCalendarRequired];
-        NDLog(@"CalendarVCtrl : contactAccessGranted = %@ : updateContacts = %@",contactAccessGranted?@"YES":@"NO",updateContacts?@"YES":@"NO");
-        
-        if(updateContacts && contactAccessGranted && [SettingsModel getProcessingCalendarEvents] == NO)
-        {
-            //Goes through the users address book since there's been a contact change
-            [CalendarModel getCalendarEvents];
-        }
+        //Do this so Contacts alert shows up on main thread
+        dispatch_async(dispatch_get_main_queue(),^{
+            BOOL calendarAccessGranted = [SettingsModel getCalendarAuthorization];
+            BOOL updateCalendar = [CalendarModel updateCalendarRequired];
+            NDLog(@"CalendarVCtrl : calendarAccessGranted = %@ : updateCalendar = %@",calendarAccessGranted?@"YES":@"NO",updateCalendar?@"YES":@"NO");
+            
+            if(updateCalendar && calendarAccessGranted && [SettingsModel getProcessingCalendarEvents] == NO)
+            {
+                //Goes through the users address book since there's been a contact change
+                NDLog(@"CalendarVCtrl: viewWillAppear : getCalendarEvents ");
+                [CalendarModel getCalendarEvents];
+            }
+        });
     }
     haveToday = NO;
     [self populateCalendar:YES];

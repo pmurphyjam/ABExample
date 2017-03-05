@@ -27,19 +27,32 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    //Set some fake passwords for now, these are required for SQLCipher and encryption since the passwords
+    //Set some fake user for now
+    if(![SettingsModel getLoginState])
+    {
+        [SettingsModel setUserName:@"John Smith"];
+        [SettingsModel setUserId:[NSNumber numberWithInt:1]];
+        [SettingsModel setCountry:@"USA"];
+    }
+#ifdef ENCRYPT
+    //Set this just once! These are required for SQLCipher and encryption since the passwords
     //are always used for the encryption keys plus some salt
-    [SettingsModel setDBPW0:@"1260793RTgu"];
-    [SettingsModel setDBDS0:[AppManager getSomeDSfromDate:[NSDate date]]];
-    [SettingsModel setDBPW1:@"1260793RTgu"];
-    [SettingsModel setDBDS1:[AppManager getSomeDSfromDate:[NSDate date]]];
+    if(![SettingsModel getLoginState])
+    {
+        [SettingsModel setDBPW0:@"1260793RTgu"];
+        [SettingsModel setDBPW1:@"1260793RTgu"];
+    }
+    [SettingsModel setDBCanEncrypt:YES];
+#endif
+    
     [SettingsModel setLoginState:YES];
-    [SettingsModel setUserName:@"John Smith"];
-    [SettingsModel setUserId:[NSNumber numberWithInt:1]];
-    [SettingsModel setCountry:@"USA"];
     [AppManager InitializeAppManager];
     //Open the Database. Typically you wouldn't do this until a user has enter a password first
     //In the login or signin views. Never open the DB with Encryption until you have a password present.
+    
+    //Always open the DB when the App initializes, this applys the encryption keys if the DB is encrypted
+    //so the DB can be read, this is only done once, but if called more then once it's no harm since
+    //it will only execute once.
     [[AppManager DataAccess] openConnection];
     [self configureAnalytics];
     
@@ -116,6 +129,10 @@
 {
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+    
+    //Always Close the Database connection when the App goes down
+    //This secures your data, and makes sure it can't get corrupted
+    [[AppManager DataAccess] closeConnection];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
@@ -126,6 +143,7 @@
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+    [[AppManager DataAccess] openConnection];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application

@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1A29F2DF1E6B8C6E00575669 /* libsqlcipher-ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A29F2DE1E6B8C6E00575669 /* libsqlcipher-ios.a */; };
+		1A29F2E11E6B975D00575669 /* README.md in Sources */ = {isa = PBXBuildFile; fileRef = 1A29F2E01E6B975D00575669 /* README.md */; };
 		711BF24619298172002D2514 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 711BF24519298172002D2514 /* Foundation.framework */; };
 		711BF24819298172002D2514 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 711BF24719298172002D2514 /* CoreGraphics.framework */; };
 		711BF24A19298172002D2514 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 711BF24919298172002D2514 /* UIKit.framework */; };
@@ -27,7 +29,6 @@
 		711BF2A81929865B002D2514 /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 711BF2A11929865B002D2514 /* AdSupport.framework */; };
 		711BF2A91929865B002D2514 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 711BF2A21929865B002D2514 /* CFNetwork.framework */; };
 		711BF2AA1929865B002D2514 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 711BF2A31929865B002D2514 /* CoreData.framework */; };
-		711BF2AB1929865B002D2514 /* libsqlite3.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 711BF2A41929865B002D2514 /* libsqlite3.0.dylib */; };
 		711BF2AC1929865B002D2514 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 711BF2A51929865B002D2514 /* libz.dylib */; };
 		711BF2AE1929867B002D2514 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 711BF2AD1929867B002D2514 /* Security.framework */; };
 		711BF2B7192986A9002D2514 /* NSData+Category.m in Sources */ = {isa = PBXBuildFile; fileRef = 711BF2B0192986A9002D2514 /* NSData+Category.m */; };
@@ -55,15 +56,6 @@
 		711BF2F51929AC07002D2514 /* ContactObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 711BF2F41929AC07002D2514 /* ContactObject.m */; };
 		711BF2F81929B7C0002D2514 /* ContactsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 711BF2F71929B7C0002D2514 /* ContactsTableViewController.m */; };
 		711BF2FB1929B81F002D2514 /* ContactDetailTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 711BF2FA1929B81F002D2514 /* ContactDetailTableViewController.m */; };
-		712EF1DA192C675B004C9CE4 /* AMD.png in Resources */ = {isa = PBXBuildFile; fileRef = 712EF1D1192C675B004C9CE4 /* AMD.png */; };
-		712EF1DB192C675B004C9CE4 /* Apple.png in Resources */ = {isa = PBXBuildFile; fileRef = 712EF1D2192C675B004C9CE4 /* Apple.png */; };
-		712EF1DC192C675B004C9CE4 /* BofA.png in Resources */ = {isa = PBXBuildFile; fileRef = 712EF1D3192C675B004C9CE4 /* BofA.png */; };
-		712EF1DD192C675B004C9CE4 /* ChaseBank.png in Resources */ = {isa = PBXBuildFile; fileRef = 712EF1D4192C675B004C9CE4 /* ChaseBank.png */; };
-		712EF1DE192C675B004C9CE4 /* Chevron.png in Resources */ = {isa = PBXBuildFile; fileRef = 712EF1D5192C675B004C9CE4 /* Chevron.png */; };
-		712EF1DF192C675B004C9CE4 /* Cisco.png in Resources */ = {isa = PBXBuildFile; fileRef = 712EF1D6192C675B004C9CE4 /* Cisco.png */; };
-		712EF1E0192C675B004C9CE4 /* Intel.png in Resources */ = {isa = PBXBuildFile; fileRef = 712EF1D7192C675B004C9CE4 /* Intel.png */; };
-		712EF1E1192C675B004C9CE4 /* WellsFargo.png in Resources */ = {isa = PBXBuildFile; fileRef = 712EF1D8192C675B004C9CE4 /* WellsFargo.png */; };
-		712EF1E2192C675B004C9CE4 /* Zynga.png in Resources */ = {isa = PBXBuildFile; fileRef = 712EF1D9192C675B004C9CE4 /* Zynga.png */; };
 		7136EC52192BB1D20062AB6A /* ContactTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7136EC50192BB1D20062AB6A /* ContactTableViewCell.m */; };
 		7136EC53192BB1D20062AB6A /* ContactTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7136EC51192BB1D20062AB6A /* ContactTableViewCell.xib */; };
 		715602BF193E4E2F007E4048 /* AddressBookIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 715602BE193E4E2F007E4048 /* AddressBookIcon.png */; };
@@ -90,6 +82,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1A29F2DE1E6B8C6E00575669 /* libsqlcipher-ios.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libsqlcipher-ios.a"; path = "ABExample/sqlcipher/binaries/libsqlcipher-ios.a"; sourceTree = "<group>"; };
+		1A29F2E01E6B975D00575669 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = sqlcipher/README.md; sourceTree = "<group>"; };
 		1A7E6B2E1E69F10E004C4C23 /* GAIEcommerceFields.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GAIEcommerceFields.h; path = AppIOS/Analytics/Google/GAIEcommerceFields.h; sourceTree = SOURCE_ROOT; };
 		1A7E6B2F1E69F10E004C4C23 /* GAIEcommerceProduct.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GAIEcommerceProduct.h; path = AppIOS/Analytics/Google/GAIEcommerceProduct.h; sourceTree = SOURCE_ROOT; };
 		1A7E6B301E69F10E004C4C23 /* GAIEcommerceProductAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GAIEcommerceProductAction.h; path = AppIOS/Analytics/Google/GAIEcommerceProductAction.h; sourceTree = SOURCE_ROOT; };
@@ -128,7 +122,6 @@
 		711BF2A11929865B002D2514 /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
 		711BF2A21929865B002D2514 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		711BF2A31929865B002D2514 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
-		711BF2A41929865B002D2514 /* libsqlite3.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.0.dylib; path = usr/lib/libsqlite3.0.dylib; sourceTree = SDKROOT; };
 		711BF2A51929865B002D2514 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		711BF2AD1929867B002D2514 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		711BF2AF192986A9002D2514 /* NSData+Category.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSData+Category.h"; path = "AppIOS/App/NSData+Category.h"; sourceTree = SOURCE_ROOT; };
@@ -177,15 +170,6 @@
 		711BF2F71929B7C0002D2514 /* ContactsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ContactsTableViewController.m; path = ViewControllers/ContactsTableViewController.m; sourceTree = "<group>"; };
 		711BF2F91929B81F002D2514 /* ContactDetailTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ContactDetailTableViewController.h; path = ViewControllers/ContactDetailTableViewController.h; sourceTree = "<group>"; };
 		711BF2FA1929B81F002D2514 /* ContactDetailTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ContactDetailTableViewController.m; path = ViewControllers/ContactDetailTableViewController.m; sourceTree = "<group>"; };
-		712EF1D1192C675B004C9CE4 /* AMD.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = AMD.png; path = Companies/AMD.png; sourceTree = "<group>"; };
-		712EF1D2192C675B004C9CE4 /* Apple.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Apple.png; path = Companies/Apple.png; sourceTree = "<group>"; };
-		712EF1D3192C675B004C9CE4 /* BofA.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = BofA.png; path = Companies/BofA.png; sourceTree = "<group>"; };
-		712EF1D4192C675B004C9CE4 /* ChaseBank.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ChaseBank.png; path = Companies/ChaseBank.png; sourceTree = "<group>"; };
-		712EF1D5192C675B004C9CE4 /* Chevron.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Chevron.png; path = Companies/Chevron.png; sourceTree = "<group>"; };
-		712EF1D6192C675B004C9CE4 /* Cisco.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Cisco.png; path = Companies/Cisco.png; sourceTree = "<group>"; };
-		712EF1D7192C675B004C9CE4 /* Intel.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Intel.png; path = Companies/Intel.png; sourceTree = "<group>"; };
-		712EF1D8192C675B004C9CE4 /* WellsFargo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = WellsFargo.png; path = Companies/WellsFargo.png; sourceTree = "<group>"; };
-		712EF1D9192C675B004C9CE4 /* Zynga.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Zynga.png; path = Companies/Zynga.png; sourceTree = "<group>"; };
 		7136EC4F192BB1D20062AB6A /* ContactTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ContactTableViewCell.h; path = ViewControllers/ContactTableViewCell.h; sourceTree = "<group>"; };
 		7136EC50192BB1D20062AB6A /* ContactTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ContactTableViewCell.m; path = ViewControllers/ContactTableViewCell.m; sourceTree = "<group>"; };
 		7136EC51192BB1D20062AB6A /* ContactTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = ContactTableViewCell.xib; path = ViewControllers/ContactTableViewCell.xib; sourceTree = "<group>"; };
@@ -214,13 +198,13 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1A29F2DF1E6B8C6E00575669 /* libsqlcipher-ios.a in Frameworks */,
 				7168A12D193CD4C100613F90 /* EventKit.framework in Frameworks */,
 				711BF2EB192990B6002D2514 /* SystemConfiguration.framework in Frameworks */,
 				711BF2AE1929867B002D2514 /* Security.framework in Frameworks */,
 				711BF2A81929865B002D2514 /* AdSupport.framework in Frameworks */,
 				711BF2A91929865B002D2514 /* CFNetwork.framework in Frameworks */,
 				711BF2AA1929865B002D2514 /* CoreData.framework in Frameworks */,
-				711BF2AB1929865B002D2514 /* libsqlite3.0.dylib in Frameworks */,
 				711BF2AC1929865B002D2514 /* libz.dylib in Frameworks */,
 				711BF24819298172002D2514 /* CoreGraphics.framework in Frameworks */,
 				711BF24A19298172002D2514 /* UIKit.framework in Frameworks */,
@@ -272,7 +256,7 @@
 				711BF2A11929865B002D2514 /* AdSupport.framework */,
 				711BF2A21929865B002D2514 /* CFNetwork.framework */,
 				711BF2A31929865B002D2514 /* CoreData.framework */,
-				711BF2A41929865B002D2514 /* libsqlite3.0.dylib */,
+				1A29F2DE1E6B8C6E00575669 /* libsqlcipher-ios.a */,
 				711BF2A51929865B002D2514 /* libz.dylib */,
 				711BF29D19298606002D2514 /* libGoogleAnalyticsServices.a */,
 				711BF24519298172002D2514 /* Foundation.framework */,
@@ -413,8 +397,9 @@
 		711BF28219298556002D2514 /* ReadMe */ = {
 			isa = PBXGroup;
 			children = (
-				711BF2DF19298EB0002D2514 /* README.md */,
 				711BF2E119298EB9002D2514 /* README.md */,
+				711BF2DF19298EB0002D2514 /* README.md */,
+				1A29F2E01E6B975D00575669 /* README.md */,
 			);
 			name = ReadMe;
 			sourceTree = "<group>";
@@ -470,15 +455,6 @@
 			children = (
 				715602C0193E4FFA007E4048 /* Calendar.png */,
 				715602BE193E4E2F007E4048 /* AddressBookIcon.png */,
-				712EF1D1192C675B004C9CE4 /* AMD.png */,
-				712EF1D2192C675B004C9CE4 /* Apple.png */,
-				712EF1D3192C675B004C9CE4 /* BofA.png */,
-				712EF1D4192C675B004C9CE4 /* ChaseBank.png */,
-				712EF1D5192C675B004C9CE4 /* Chevron.png */,
-				712EF1D6192C675B004C9CE4 /* Cisco.png */,
-				712EF1D7192C675B004C9CE4 /* Intel.png */,
-				712EF1D8192C675B004C9CE4 /* WellsFargo.png */,
-				712EF1D9192C675B004C9CE4 /* Zynga.png */,
 			);
 			name = Images;
 			sourceTree = "<group>";
@@ -596,25 +572,16 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				712EF1DE192C675B004C9CE4 /* Chevron.png in Resources */,
 				711BF2E019298EB0002D2514 /* README.md in Resources */,
 				711BF25C19298172002D2514 /* Main_iPad.storyboard in Resources */,
-				712EF1E0192C675B004C9CE4 /* Intel.png in Resources */,
-				712EF1DD192C675B004C9CE4 /* ChaseBank.png in Resources */,
 				711BF26119298172002D2514 /* Images.xcassets in Resources */,
 				715602C1193E4FFA007E4048 /* Calendar.png in Resources */,
 				711BF2E219298EB9002D2514 /* README.md in Resources */,
 				711BF25919298172002D2514 /* Main_iPhone.storyboard in Resources */,
-				712EF1DB192C675B004C9CE4 /* Apple.png in Resources */,
 				711BF2E519298F51002D2514 /* Contacts.db in Resources */,
 				711BF25019298172002D2514 /* InfoPlist.strings in Resources */,
 				715602BF193E4E2F007E4048 /* AddressBookIcon.png in Resources */,
 				7136EC53192BB1D20062AB6A /* ContactTableViewCell.xib in Resources */,
-				712EF1DF192C675B004C9CE4 /* Cisco.png in Resources */,
-				712EF1DC192C675B004C9CE4 /* BofA.png in Resources */,
-				712EF1E2192C675B004C9CE4 /* Zynga.png in Resources */,
-				712EF1DA192C675B004C9CE4 /* AMD.png in Resources */,
-				712EF1E1192C675B004C9CE4 /* WellsFargo.png in Resources */,
 				7197D21B193CE2AC00470CC2 /* CalendarTableViewCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -692,6 +659,7 @@
 				711BF2F81929B7C0002D2514 /* ContactsTableViewController.m in Sources */,
 				7197D213193CE25E00470CC2 /* CalendarTableViewController.m in Sources */,
 				711BF25219298172002D2514 /* main.m in Sources */,
+				1A29F2E11E6B975D00575669 /* README.md in Sources */,
 				711BF2D9192986EB002D2514 /* AppQueryParameter.m in Sources */,
 				7168A128193CD28100613F90 /* CalendarObject.m in Sources */,
 				711BF2DD192986EB002D2514 /* SettingsModel.m in Sources */,
@@ -788,6 +756,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_LDFLAGS = "";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -820,6 +789,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				OTHER_LDFLAGS = "";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
@@ -838,12 +808,15 @@
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ABExample/ABExample-Prefix.pch";
-				GCC_PREPROCESSOR_DEFINITIONS = "";
+				GCC_PREPROCESSOR_DEFINITIONS = ENCRYPT;
+				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/ABExample/sqlcipher/include/sqlite3.h\"";
 				INFOPLIST_FILE = "ABExample/ABExample-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/AppIOS/Analytics/Google",
+					"$(PROJECT_DIR)/ABExample/sqlcipher/binaries",
 				);
+				OTHER_CFLAGS = "-DSQLITE_HAS_CODEC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -861,11 +834,15 @@
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ABExample/ABExample-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = ENCRYPT;
+				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/ABExample/sqlcipher/include/sqlite3.h\"";
 				INFOPLIST_FILE = "ABExample/ABExample-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/AppIOS/Analytics/Google",
+					"$(PROJECT_DIR)/ABExample/sqlcipher/binaries",
 				);
+				OTHER_CFLAGS = "-DSQLITE_HAS_CODEC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};

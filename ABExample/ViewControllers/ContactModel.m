@@ -351,6 +351,22 @@
     return hashedValue;
 }
 
++(BOOL)getAccessToContacts
+{
+    BOOL  status = NO;
+    CNAuthorizationStatus contactStatus = [CNContactStore authorizationStatusForEntityType:CNEntityTypeContacts];
+    if( contactStatus == CNAuthorizationStatusDenied || contactStatus == CNAuthorizationStatusRestricted)
+    {
+        NELog(@"ContactModel : Access Denied!");
+    }
+    else
+    {
+        NELog(@"ContactModel : Access Granted!");
+        status = YES;
+    }
+    return status;
+}
+
 +(int)getValidContactsCount
 {
     int __block intValue = 0;
