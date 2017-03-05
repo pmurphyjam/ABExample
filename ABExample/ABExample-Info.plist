@@ -31,9 +31,9 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSContactsUsageDescription</key>
-	<string>Used for inviting colleagues to ABExample</string>
+	<string>Used for displaying your contacts in ABExample</string>
 	<key>NSCalendarsUsageDescription</key>
-	<string>Used for appending ABExample Calendar events to your calendar</string>
+	<string>Used for displaying your calendar events in ABExample</string>
 	<key>UIMainStoryboardFile</key>
 	<string>Main_iPhone</string>
 	<key>UIMainStoryboardFile~ipad</key>

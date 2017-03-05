@@ -27,5 +27,6 @@
 +(BOOL)getCalendarEvents;
 +(BOOL)updateCalendarRequired;
 +(void)getCalendarAuthorization;
++(int)getNumberOfCalendarEvents;
 
 @end

@@ -295,6 +295,17 @@ static EKEventStore *eventStore;
     return status;
 }
 
++(int)getNumberOfCalendarEvents
+{
+    int count = 0;
+    NSMutableArray *calendarArray = [[AppManager DataAccess] GetRecordsForQuery:@" select calendarID from Calendar ",nil];
+    if([calendarArray count] > 0)
+        count = (int)[calendarArray count];
+    return count;
+}
+
+
+
 +(BOOL)doesCalendarCreationDateNeedUpdating:(NSString*)calendarID andCreationDate:(NSString*)creationDate
 {
     BOOL status = NO;
@@ -386,15 +397,14 @@ static EKEventStore *eventStore;
                             NSString *emailMD5 = [DeviceUtils hashedValue:email uppercase:NO];
                             [calendarAttendeeObject setEmailHash:emailMD5];
                             [calendarAttendeeObject setNameHash:[DeviceUtils hashedValue:[NSString stringWithFormat:@"%@%@",[firstName lowercaseString],[lastName lowercaseString]] uppercase:NO]];
-                            BOOL smugContactIDEmailExists = [ContactModel doesContactExistForEmailHash:emailMD5];
-                            [calendarAttendeeObject setContactExists:[NSNumber numberWithBool:smugContactIDEmailExists]];
+                            BOOL contactIDEmailExists = [ContactModel doesContactExistForEmailHash:emailMD5];
+                            [calendarAttendeeObject setContactExists:[NSNumber numberWithBool:contactIDEmailExists]];
                             NCALLog(@"CalendarModel : insertCalendarEvent = %@ : email = %@",insertCalendarEvent?@"YES":@"NO",email);
                             [calendarAttendeeObject setEmailAddress:email];
                             [attendeesArray addObject:calendarAttendeeObject];
                             
                             if([existingEvent.location length] > 0)
                                 numberOfItems--;
-                            
                         }
                     }
                 }
@@ -405,7 +415,7 @@ static EKEventStore *eventStore;
                     insertCalendarEvent = NO;
                     calendarEventCount++;
                     [SettingsModel setTotalCalendarEvents:[NSNumber numberWithInt:calendarEventCount]];
-                    NCALLog(@"CalendarModel : calendarObject = %@",calendarObject);
+                    NCALLog(@"CalendarModel : calendarObject[%d] = %@",calendarEventCount,calendarObject);
                 }
             }
         }
@@ -466,6 +476,9 @@ static EKEventStore *eventStore;
         NSArray *calendars = [eventStore calendarsForEntityType:EKEntityTypeEvent];
         NSDate *today = [NSDate date];
         int betweenDays = 60;
+        BOOL calendarIDExists = NO;
+        BOOL insertCalendarEvent = NO;
+        NSMutableArray *eventExistsArray = [NSMutableArray new];
         NSDate *startDate = [today dateByAddingTimeInterval:-60*60*24*betweenDays];
         NSDate *endDate = [today dateByAddingTimeInterval:60*60*24*betweenDays];
         NSPredicate *predicate = [eventStore predicateForEventsWithStartDate:startDate
@@ -477,19 +490,25 @@ static EKEventStore *eventStore;
             if([[existingEvent attendees] count] > 0)
             {
                 BOOL allDayEvent = [existingEvent isAllDay];
-                BOOL hasAttendees = NO;
-                BOOL canInsertiCalEvent = NO;
+                calendarIDExists = [CalendarModel doesCalendarEventExistForCalendarID:existingEvent.eventIdentifier];
+                BOOL calendarCreationDateUpdate = [CalendarModel doesCalendarCreationDateNeedUpdating:existingEvent.eventIdentifier andCreationDate:[AppManager getDateStringFromDate:existingEvent.creationDate]];
+                int participants = [[existingEvent attendees] count];
+                BOOL eventExists = NO;
+                insertCalendarEvent = NO;
 
-                if([[existingEvent attendees] count] > 0)
-                    hasAttendees = YES;
-                
-                if(allDayEvent && !hasAttendees)
-                    canInsertiCalEvent = NO;
-                else
-                    canInsertiCalEvent = YES;
-                
+                //Check for re-occuring Calendar events and count them just once
+                if(![eventExistsArray containsObject:existingEvent.eventIdentifier])
+                {
+                    [eventExistsArray addObject:existingEvent.eventIdentifier];
+                    eventExists = YES;
+                }
+                NCALLog(@"CalendarModel : validCalendarEventCount : eventExists = %@ : calendarCreationDateUpdate = %@",eventExists?@"YES":@"NO",calendarCreationDateUpdate?@"YES":@"NO");
+
+                if(((!allDayEvent || (allDayEvent && participants > 2)) && eventExists) || calendarCreationDateUpdate)
+                    insertCalendarEvent = YES;
+            
                 //Don't insert all day iCal events since their holidays and they always have no attendees
-                if(canInsertiCalEvent)
+                if(insertCalendarEvent)
                 {
                     calendarCount++;
                 }
@@ -504,11 +523,11 @@ static EKEventStore *eventStore;
     BOOL status = NO;
     if([SettingsModel getCalendarAuthorization])
     {
-        int savedEventsCount = [[SettingsModel getTotalCalendarEvents] intValue];
+        int savedEventsCount = [self getNumberOfCalendarEvents];
         int currentEventsCount = [self validCalendarEventCount];
         if((savedEventsCount != currentEventsCount) || savedEventsCount == 0)
             status = YES;
-        NSLog(@"CalendarModel : updateCalendarRequired = %@ : savedEventsCount = %d currentEventsCount = %d",status?@"YES":@"NO",savedEventsCount,currentEventsCount);
+        NCALLog(@"CalendarModel : updateCalendarRequired = %@ : savedEventsCount = %d currentEventsCount = %d",status?@"YES":@"NO",savedEventsCount,currentEventsCount);
     }
     return status;
 }

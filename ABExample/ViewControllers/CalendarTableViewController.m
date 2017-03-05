@@ -47,7 +47,7 @@
 @synthesize todaysIndexPath;
 @synthesize haveToday;
 
-#define DEBUG
+//#define DEBUG
 #import "AppConstants.h"
 
 #define LABEL_Y_INCR         21.0
