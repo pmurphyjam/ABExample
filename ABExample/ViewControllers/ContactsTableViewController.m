@@ -3,7 +3,7 @@
 //  ABExample
 //
 //  Created by Pat Murphy on 5/18/14.
-//  Copyright (c) 2014 Fitamatic All rights reserved.
+//  Copyright (c) 2017 Fitamatic All rights reserved.
 //
 
 #import "ContactsTableViewController.h"
@@ -13,8 +13,7 @@
 #import "AppManager.h"
 #import "ContactModel.h"
 #import "ContactObject.h"
-#import "AppDebugLog.h"
-#import "SettingsModel.h"
+#import "SettingsModel+Category.h"
 #import <Contacts/Contacts.h>
 
 @interface ContactsTableViewController ()
@@ -42,7 +41,7 @@
 @synthesize currentSearchString;
 
 //#define DEBUG
-#import "AppConstants.h"
+#import "ABConstants.h"
 
 #define LABEL_Y_INCR         21.0
 
@@ -663,8 +662,6 @@
 //Keep this last in the file
 - (void)didReceiveMemoryWarning
 {
-    [AppManager currentMemoryConsumption:[NSString stringWithUTF8String:__PRETTY_FUNCTION__]];
-    [[AppDebugLog appDebug] writeDebugData:[NSString stringWithFormat:@"ContactsVCtrl: didReceiveMemoryWarning"]];
     NSLog(@"ContactsVCtrl: didReceiveMemoryWarning : ERROR");
     [super didReceiveMemoryWarning];
 }

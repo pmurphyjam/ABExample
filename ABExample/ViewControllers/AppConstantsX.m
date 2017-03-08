@@ -6,6 +6,6 @@
 //  Copyright (c) 2014 Fitamatic All rights reserved.
 //
 
-#import "AppConstants.h"
+#import "AppConstantsX.h"
 
 

@@ -3,7 +3,7 @@
 //  ABExample
 //
 //  Created by Pat Murphy on 5/18/14.
-//  Copyright (c) 2014 Fitamatic All rights reserved.
+//  Copyright (c) 2017 Fitamatic All rights reserved.
 //
 //  Info : Creates a Contact Object from the DB Contacts table, 1-1 mapping.
 //  All DB Tables should have this, similar in construct to ORMLite for Android.

@@ -3,7 +3,7 @@
 //  ABExample
 //
 //  Created by Pat Murphy on 5/18/14.
-//  Copyright (c) 2014 Fitamatic All rights reserved.
+//  Copyright (c) 2017 Fitamatic All rights reserved.
 //
 //  Info : main program, uses NSException process to save a symbolicated crash and
 //  store this data into the DB. This data can then be loaded up to the Server later.
@@ -14,21 +14,10 @@
 #import <UIKit/UIKit.h>
 
 #import "AppDelegate.h"
-#import "NSException+Category.h"
 
 int main(int argc, char * argv[])
 {
-    @autoreleasepool
-    {
-        int appInt = 0;
-        @try
-        {
-            appInt = UIApplicationMain(argc, argv, nil, NSStringFromClass([AppDelegate class]));
-        }
-        @catch (NSException *exception)
-        {
-            [exception saveExceptionData];
-        }
-        return appInt;
+    @autoreleasepool {
+        return UIApplicationMain(argc, argv, nil, NSStringFromClass([AppDelegate class]));
     }
 }

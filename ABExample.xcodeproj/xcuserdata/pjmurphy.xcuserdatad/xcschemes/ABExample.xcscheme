@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "711BF24119298172002D2514"
+               BlueprintIdentifier = "1AFC8F781E70819500F4759B"
                BuildableName = "ABExample.app"
                BlueprintName = "ABExample"
                ReferencedContainer = "container:ABExample.xcodeproj">
@@ -32,9 +32,19 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "711BF26519298172002D2514"
+               BlueprintIdentifier = "1AFC8F941E70819500F4759B"
                BuildableName = "ABExampleTests.xctest"
                BlueprintName = "ABExampleTests"
+               ReferencedContainer = "container:ABExample.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "1AFC8F9F1E70819500F4759B"
+               BuildableName = "ABExampleUITests.xctest"
+               BlueprintName = "ABExampleUITests"
                ReferencedContainer = "container:ABExample.xcodeproj">
             </BuildableReference>
          </TestableReference>
@@ -42,7 +52,7 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "711BF24119298172002D2514"
+            BlueprintIdentifier = "1AFC8F781E70819500F4759B"
             BuildableName = "ABExample.app"
             BlueprintName = "ABExample"
             ReferencedContainer = "container:ABExample.xcodeproj">
@@ -65,7 +75,7 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "711BF24119298172002D2514"
+            BlueprintIdentifier = "1AFC8F781E70819500F4759B"
             BuildableName = "ABExample.app"
             BlueprintName = "ABExample"
             ReferencedContainer = "container:ABExample.xcodeproj">
@@ -84,7 +94,7 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "711BF24119298172002D2514"
+            BlueprintIdentifier = "1AFC8F781E70819500F4759B"
             BuildableName = "ABExample.app"
             BlueprintName = "ABExample"
             ReferencedContainer = "container:ABExample.xcodeproj">

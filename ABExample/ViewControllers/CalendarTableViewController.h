@@ -3,7 +3,7 @@
 //  ABExample
 //
 //  Created by Pat Murphy on 5/18/14.
-//  Copyright (c) 2014 Fitamatic All rights reserved.
+//  Copyright (c) 2017 Fitamatic All rights reserved.
 //
 //  Info : Calendar Table View controller. Uses a UISearchDisplayController for searching
 //  for event title or location. Also adds month indexing for quick scrolling to a desired contact.

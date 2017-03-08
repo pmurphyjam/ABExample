@@ -3,7 +3,7 @@
 //  ABExample
 //
 //  Created by Pat Murphy on 5/18/14.
-//  Copyright (c) 2014 Fitamatic All rights reserved.
+//  Copyright (c) 2017 Fitamatic All rights reserved.
 //
 // Info : Controls all accesses to the Contacts table view contrller.
 // Should have an Select(get), Insert, Update, and Delete for all tables, and deal only with ContactObjects.

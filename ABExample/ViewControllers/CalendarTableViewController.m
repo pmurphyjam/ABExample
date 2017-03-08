@@ -3,7 +3,7 @@
 //  ABExample
 //
 //  Created by Pat Murphy on 5/18/14.
-//  Copyright (c) 2014 Fitamatic All rights reserved.
+//  Copyright (c) 2017 Fitamatic All rights reserved.
 //
 
 #import "CalendarTableViewController.h"
@@ -12,8 +12,7 @@
 #import "AppManager.h"
 #import "CalendarModel.h"
 #import "CalendarObject.h"
-#import "AppDebugLog.h"
-#import "SettingsModel.h"
+#import "SettingsModel+Category.h"
 #import "AppDateFormatter.h"
 #import "UIColor+Category.h"
 
@@ -48,7 +47,7 @@
 @synthesize haveToday;
 
 //#define DEBUG
-#import "AppConstants.h"
+#import "ABConstants.h"
 
 #define LABEL_Y_INCR         21.0
 #define ATTENDEE_OFFSET      56.0
@@ -306,7 +305,7 @@
         UIFont *labelFont = [UIFont fontWithName:@"HelveticaNeue-Light" size:18];
         NSString *sectionLabelStr = [NSString stringWithString:[[sectionDetails objectAtIndex:section] objectForKey:@"SectionHeader"]];
         NSString *sectionMonthAndDay = @"";
-        NSString *monthAndDay = [AppManager getMediumDatefromDate:[NSDate date]];
+        NSString *monthAndDay = [CalendarModel getMediumDatefromDate:[NSDate date]];
         NSArray *sectionArray = [sectionLabelStr componentsSeparatedByString:@":"];
         if([sectionArray count] > 0)
             sectionMonthAndDay = [sectionArray objectAtIndex:0];
@@ -590,7 +589,7 @@
             [[cell attendees] sizeToFit];
         }
 
-        NSDate *startDate = [AppManager getDateFromDateString:[calendarObject startDate]];
+        NSDate *startDate = [CalendarModel getDateFromDateString:[calendarObject startDate]];
         NSString *startDateStr = [dateFormatter stringFromDate:startDate];
         if([startDateStr length] > 0)
         {
@@ -612,8 +611,6 @@
 //Keep this last in the file
 - (void)didReceiveMemoryWarning
 {
-    [AppManager currentMemoryConsumption:[NSString stringWithUTF8String:__PRETTY_FUNCTION__]];
-    [[AppDebugLog appDebug] writeDebugData:[NSString stringWithFormat:@"CalendarVCtrl: didReceiveMemoryWarning"]];
     NSLog(@"CalendarVCtrl: didReceiveMemoryWarning : ERROR");
     [super didReceiveMemoryWarning];
 }

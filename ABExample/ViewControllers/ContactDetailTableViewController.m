@@ -3,13 +3,12 @@
 //  ABExample
 //
 //  Created by Pat Murphy on 5/18/14.
-//  Copyright (c) 2014 Fitamatic All rights reserved.
+//  Copyright (c) 2017 Fitamatic All rights reserved.
 //
 
 #import "ContactDetailTableViewController.h"
 #import "AppAnalytics.h"
 #import "AppManager.h"
-#import "AppDebugLog.h"
 #import "SettingsModel.h"
 #import "ContactModel.h"
 
@@ -225,8 +224,6 @@
 //Keep this last in the file
 - (void)didReceiveMemoryWarning
 {
-    [AppManager currentMemoryConsumption:[NSString stringWithUTF8String:__PRETTY_FUNCTION__]];
-    [[AppDebugLog appDebug] writeDebugData:[NSString stringWithFormat:@"ContactDetailVCtrl : didReceiveMemoryWarning"]];
     NSLog(@"ContactDetailVCtrl : didReceiveMemoryWarning : ERROR");
     [super didReceiveMemoryWarning];
 }

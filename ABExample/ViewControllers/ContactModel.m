@@ -3,21 +3,21 @@
 //  ABExample
 //
 //  Created by Pat Murphy on 5/18/14.
-//  Copyright (c) 2014 Fitamatic All rights reserved.
+//  Copyright (c) 2017 Fitamatic All rights reserved.
 //
 
 #import "ContactModel.h"
 #import "AppManager.h"
 #import "ContactConvertor.h"
 #import "NSData+Category.h"
-//#import "ABContact.h"
-//#import "ABContactsHelper.h"
+#import "NSString+Category.h"
 #import <Contacts/Contacts.h>
-#import "DeviceUtils.h"
-#import "SettingsModel.h"
+#import "SettingsModel+Category.h"
+#import "AppDateFormatter.h"
 
 @implementation ContactModel
 
+#import "ABConstants.h"
 #import "AppConstants.h"
 
 +(NSDictionary*)insertContactsSQL:(ContactObject*)contactObject
@@ -210,13 +210,13 @@
 +(BOOL)insertContact:(ContactObject*)contactObject
 {
     NSDictionary *sqlAndParams = [self insertContactsSQL:contactObject];
-	BOOL status = [[AppManager DataAccess] ExecuteStatement:[sqlAndParams objectForKey:@"SQL"] WithParameters:[sqlAndParams objectForKey:@"Parameters"]];
+	BOOL status = [[AppManager SQLDataAccess] ExecuteStatement:[sqlAndParams objectForKey:@"SQL"] WithParameters:[sqlAndParams objectForKey:@"Parameters"]];
     return status;
 }
 
 +(NSMutableArray*)getContactsForView
 {
-    NSMutableArray *contactArray = [[AppManager DataAccess] GetRecordsForQuery:@"select * from Contacts order by lastName asc, firstName asc ",nil];
+    NSMutableArray *contactArray = [[AppManager SQLDataAccess] GetRecordsForQuery:@"select * from Contacts order by lastName asc, firstName asc ",nil];
     ContactConvertor *contactConvertor = [[ContactConvertor alloc] init];
     NSMutableArray *contactConvertorArray = [contactConvertor convertToObjects:contactArray];
     return contactConvertorArray;
@@ -224,7 +224,7 @@
 
 +(BOOL)updateContact:(ContactObject*)contactObject
 {
-    BOOL status = [[AppManager DataAccess] ExecuteStatement:@"update Contacts set sync_bit = ?,sync_delete = ?,sync_datetime = ?,accountID = ?,contactID = ?,firstName = ?,lastName = ?,emailAddress = ?,phoneNumber = ?,phoneHash = ?,emailHash = ?,birthDate = ?,modificationDate = ?,company = ?,address = ?,city = ?,state = ?,nameHash = ?, numberOfItems = ?,userThumbnail = ? where contactID = ?",[NSNumber numberWithBool:YES],[NSNumber numberWithBool:NO],[AppManager UTCDateTime],[contactObject accountID],[contactObject contactID],[contactObject firstName],[contactObject lastName],[contactObject emailAddress],[contactObject phoneNumber],[contactObject phoneHash],[contactObject emailHash],[contactObject birthDate],[contactObject modificationDate],[contactObject company],[contactObject address],[contactObject city],[contactObject state],[contactObject nameHash],[contactObject numberOfItems],[contactObject userThumbnail],[contactObject contactID],nil];
+    BOOL status = [[AppManager SQLDataAccess] ExecuteStatement:@"update Contacts set sync_bit = ?,sync_delete = ?,sync_datetime = ?,accountID = ?,contactID = ?,firstName = ?,lastName = ?,emailAddress = ?,phoneNumber = ?,phoneHash = ?,emailHash = ?,birthDate = ?,modificationDate = ?,company = ?,address = ?,city = ?,state = ?,nameHash = ?, numberOfItems = ?,userThumbnail = ? where contactID = ?",[NSNumber numberWithBool:YES],[NSNumber numberWithBool:NO],[AppManager UTCDateTime],[contactObject accountID],[contactObject contactID],[contactObject firstName],[contactObject lastName],[contactObject emailAddress],[contactObject phoneNumber],[contactObject phoneHash],[contactObject emailHash],[contactObject birthDate],[contactObject modificationDate],[contactObject company],[contactObject address],[contactObject city],[contactObject state],[contactObject nameHash],[contactObject numberOfItems],[contactObject userThumbnail],[contactObject contactID],nil];
     return status;
 }
 
@@ -240,26 +240,26 @@
 +(NSMutableArray*)getContactsSectionsForView
 {
     NSDictionary *sqlAndParams = [self getContactsSectionsForViewSQL];
-	NSMutableArray *chatsArray = [[AppManager DataAccess] GetRecordsForQuery:[sqlAndParams objectForKey:@"SQL"] WithParameters:[sqlAndParams objectForKey:@"Parameters"]];
+	NSMutableArray *chatsArray = [[AppManager SQLDataAccess] GetRecordsForQuery:[sqlAndParams objectForKey:@"SQL"] WithParameters:[sqlAndParams objectForKey:@"Parameters"]];
     return chatsArray;
 }
 
 +(BOOL)deleteContact:(ContactObject*)contactObject
 {
-    BOOL status = [[AppManager DataAccess] ExecuteStatement:@"delete from Contacts where contactID = ?",[contactObject contactID],nil];
+    BOOL status = [[AppManager SQLDataAccess] ExecuteStatement:@"delete from Contacts where contactID = ?",[contactObject contactID],nil];
     return status;
 }
 
 +(NSMutableArray*)getUserContactIDHashes
 {
-    NSMutableArray *contactArray = [[AppManager DataAccess] GetRecordsForQuery:@"select coalesce(phoneHash,emailHash) as hash from Contacts ",nil];
+    NSMutableArray *contactArray = [[AppManager SQLDataAccess] GetRecordsForQuery:@"select coalesce(phoneHash,emailHash) as hash from Contacts ",nil];
     return contactArray;
 }
 
 +(BOOL)doesContactExistForContactID:(NSString*)contactID
 {
     BOOL status = NO;
-    NSMutableArray *contactArray = [[AppManager DataAccess] GetRecordsForQuery:@" select contactID from Contacts where contactID = ?  ",contactID,nil];
+    NSMutableArray *contactArray = [[AppManager SQLDataAccess] GetRecordsForQuery:@" select contactID from Contacts where contactID = ?  ",contactID,nil];
     if([contactArray count] > 0)
         status = YES;
     return status;
@@ -268,7 +268,7 @@
 +(BOOL)doesContactNeedUpdating:(ContactObject*)contactObject
 {
     BOOL status = NO;
-    NSMutableArray *contactArray = [[AppManager DataAccess] GetRecordsForQuery:@" select nameHash from Contacts where contactID = ?  ",[contactObject contactID],nil];
+    NSMutableArray *contactArray = [[AppManager SQLDataAccess] GetRecordsForQuery:@" select nameHash from Contacts where contactID = ?  ",[contactObject contactID],nil];
     if([contactArray count] > 0 && ([[contactObject emailAddress] length] > 0 || [[contactObject phoneNumber] length] > 0))
     {
         NSString *nameHashStr = [[contactArray objectAtIndex:0] objectForKey:@"nameHash"];
@@ -295,7 +295,7 @@
 +(BOOL)doesContactModificationDateNeedUpdating:(ContactObject*)contactObject
 {
     BOOL status = NO;
-    NSMutableArray *contactArray = [[AppManager DataAccess] GetRecordsForQuery:@" select modificationDate from Contacts where contactID = ? ",[contactObject contactID],nil];
+    NSMutableArray *contactArray = [[AppManager SQLDataAccess] GetRecordsForQuery:@" select modificationDate from Contacts where contactID = ? ",[contactObject contactID],nil];
     if([contactArray count] > 0 && ([[contactObject emailAddress] length] > 0 || [[contactObject phoneNumber] length] > 0))
     {
         NSString *modificationDateStr = [[contactArray objectAtIndex:0] objectForKey:@"modificationDate"];
@@ -309,20 +309,20 @@
 
 +(NSMutableArray*)getContactsForHash:(NSString*)contactHash
 {
-    NSMutableArray *contactArray = [[AppManager DataAccess] GetRecordsForQuery:@" select firstName, lastName from Contacts where phoneHash = ? OR emailHash = ? ",contactHash,contactHash,nil];
+    NSMutableArray *contactArray = [[AppManager SQLDataAccess] GetRecordsForQuery:@" select firstName, lastName from Contacts where phoneHash = ? OR emailHash = ? ",contactHash,contactHash,nil];
     return contactArray;
 }
 
 +(BOOL)deleteUserContactForContactID:(NSString*)contactHash
 {
-    BOOL status = [[AppManager DataAccess] ExecuteStatement:@"delete from Contacts where phoneHash = ? OR emailHash = ? ",contactHash,contactHash,nil];
+    BOOL status = [[AppManager SQLDataAccess] ExecuteStatement:@"delete from Contacts where phoneHash = ? OR emailHash = ? ",contactHash,contactHash,nil];
     return status;
 }
 
 +(BOOL)doesContactExistForEmailHash:(NSString*)emailHash
 {
     BOOL status = NO;
-    NSMutableArray *contactArray = [[AppManager DataAccess] GetRecordsForQuery:@" select emailHash from Contacts where emailHash = ? ",emailHash,nil];
+    NSMutableArray *contactArray = [[AppManager SQLDataAccess] GetRecordsForQuery:@" select emailHash from Contacts where emailHash = ? ",emailHash,nil];
     if([contactArray count] > 0)
         status = YES;
     return status;
@@ -341,13 +341,13 @@
         if ([numberStr rangeOfCharacterFromSet:[[NSCharacterSet decimalDigitCharacterSet] invertedSet]].location == NSNotFound)
             [realPhoneNumber appendString:numberStr];
     }
-    NSString *hashedValue = [DeviceUtils hashedValue:realPhoneNumber uppercase:NO];
+    NSString *hashedValue = [NSString hashedValue:realPhoneNumber uppercase:NO];
     return hashedValue;
 }
 
 +(NSString*)getMD5HashedValue:(NSString*)value
 {
-    NSString *hashedValue = [DeviceUtils hashedValue:value uppercase:NO];
+    NSString *hashedValue = [NSString hashedValue:value uppercase:NO];
     return hashedValue;
 }
 
@@ -406,6 +406,15 @@
     return status;
 }
 
++(NSString *) getBirthDatefromDate:(NSDate*)date
+{
+    AppDateFormatter *dateFormatter = [[AppDateFormatter alloc] init];
+    [dateFormatter setDateStyle:NSDateFormatterMediumStyle];
+    [dateFormatter setTimeStyle:NSDateFormatterNoStyle];
+    NSString *datetime = [dateFormatter stringFromDate:date];
+    return datetime;
+}
+
 +(BOOL)getUserContactsFromAddressBook
 {
     BOOL __block status = NO;
@@ -457,7 +466,7 @@
 
                         if([contact birthday] != nil)
                         {
-                            [contactObject setBirthDate:[AppManager getBirthDatefromDate:[[contact birthday] date]]];
+                            [contactObject setBirthDate:[ContactModel getBirthDatefromDate:[[contact birthday] date]]];
                             numberOfItems++;
                         }
 
@@ -563,7 +572,7 @@
                                             if ( total > totalTransactions )
                                             {
                                                 total = 0 ;
-                                                [[AppManager DataAccess] ExecuteTransaction:contactsTransaction];
+                                                [[AppManager SQLDataAccess] ExecuteTransaction:contactsTransaction];
                                                 NCONLog(@"ContactModel : Name : PHONE : UPDATE contactsTransaction 1");
                                                 contactsTransaction = [[NSMutableArray alloc] init];
                                             }
@@ -588,7 +597,7 @@
                                 @autoreleasepool
                                 {
                                     [contactObject setEmailAddress:[email value]];
-                                    NSString *emailMD5 = [DeviceUtils hashedValue:[email value] uppercase:NO];
+                                    NSString *emailMD5 = [NSString hashedValue:[email value] uppercase:NO];
                                     [contactObject setEmailHash:emailMD5];
                                     [contactObject setContactID:emailMD5];
                                     totalContacts++;
@@ -632,7 +641,7 @@
                                             if ( total > totalTransactions )
                                             {
                                                 total = 0 ;
-                                                [[AppManager DataAccess] ExecuteTransaction:contactsTransaction];
+                                                [[AppManager SQLDataAccess] ExecuteTransaction:contactsTransaction];
                                                 NCONLog(@"ContactModel : Name : EMAIL : UPDATE contactsTransaction 2 ");
                                                 contactsTransaction = [[NSMutableArray alloc] init];
                                             }
@@ -663,7 +672,7 @@
                     if([contactsTransaction count] > 0)
                     {
                         //Transaction Insert
-                        status = [[AppManager DataAccess] ExecuteTransaction:contactsTransaction];
+                        status = [[AppManager SQLDataAccess] ExecuteTransaction:contactsTransaction];
                         NCONLog(@"ContactModel : UPDATE contactsTransaction : status = %@ ",status?@"YES":@"NO");
                     }
                     
