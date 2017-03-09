@@ -122,6 +122,7 @@
 		1AFC90051E70C37200F4759B /* AppDateFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDateFormatter.m; path = AppUtils/AppDateFormatter.m; sourceTree = "<group>"; };
 		1AFC90071E70C3A800F4759B /* SettingsModel+Category.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "SettingsModel+Category.h"; path = "Categories/SettingsModel+Category.h"; sourceTree = "<group>"; };
 		1AFC90081E70C3A800F4759B /* SettingsModel+Category.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "SettingsModel+Category.m"; path = "Categories/SettingsModel+Category.m"; sourceTree = "<group>"; };
+		1AFC900B1E70D3EC00F4759B /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		3ABB70901D9567E08E606A58 /* Pods-ABExample.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ABExample.release.xcconfig"; path = "Pods/Target Support Files/Pods-ABExample/Pods-ABExample.release.xcconfig"; sourceTree = "<group>"; };
 		C7FCA754007C0A43FB5EF5F7 /* Pods-ABExample.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ABExample.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ABExample/Pods-ABExample.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -155,6 +156,7 @@
 		1AFC8F701E70819500F4759B = {
 			isa = PBXGroup;
 			children = (
+				1AFC900B1E70D3EC00F4759B /* README.md */,
 				1AFC8F7B1E70819500F4759B /* ABExample */,
 				1AFC8FFF1E70C22100F4759B /* Images */,
 				1AFC8FB81E7087E600F4759B /* Resources */,
