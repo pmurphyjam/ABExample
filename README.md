@@ -13,14 +13,14 @@ You must install CocoaPods, and then run the command in the terminal window in t
 >pod update;
 
 The Podfile will install Google Analytics and SQLDataAccess which performs all of your database accesses to the
-Contacts.db database using SQLite.
+Contacts.db database using SQLite. The SQLDataAccess class uses the SQLite library libsqlite3.tbd.
 
-Now load the ABExample.xcworkspace in Xcode. This App was built with Xcode 8.2.1, and is designed to run
-in iOS10.2+.
+Once the Pod is complete, now load the ABExample.xcworkspace in Xcode. 
+This App was built with Xcode 8.2.1, and is designed to run in iOS10.2+.
 
 To run the App just hit the Run command in Xcode, the App should ask you for permissions to read your Contacts, and
 Calendar. All the App does is store these in the Contacts.db, and it never updates your Contacts or Calendar, it just
-reads them.
+reads them for demo purposes.
 
 ABExample reads the users AddressBook, and then displays them. You can delete Contacts from this App
 but they will not be deleted from the users AddressBook. This ABExample will work for a user which has 
@@ -30,13 +30,20 @@ searching first and last name. In addition the App displays the users current Ca
 events that have attendees, and are not all day events.
 
 In the ViewControllers directory there are two Models that control all the SQL statements into the Contacts.db
+using the SQLDataAccess class.
 ContactModel - Writes and reads the users Contacts from the Contacts.db.
 CalendarModel - Writes and reads the users Calendar from the Contacts.db.
-These models show you how to write your SQL statements using SQLDataAccess.
+These models show you how to write your SQL queries using SQLDataAccess.
+SQLDataAccess makes writing SQL statements super simple, and if you made a mistake in your SQL query it will print
+out an error message giving you the SQLite error message.
 
 The ABConstants has some defines in it for Notifications.
+The SQLDataAccess : AppConstants has a DB_FILE and DB_FILEX define it which you can reassign in your
+AppDelegate.m so SQLDataAccess can find your database which must be located in the NSBundle.
 The Category SettingsModel+Category is an extension of the SQLDataAccess : SettingsModel, this uses
-NSUserDefaults to store all your register data for the App. If you use SQLCipher the encryption register
+NSUserDefaults to store all your register data for the App. If you're using SQLCipher the encryption register
+[SettingsModel setDBPW0:] is used to set the Encryption key into SQLCipher. The SQLDataAccess.m class has
+lots of comments in it for how to setup SQLCipher.
 
 In addition this App incorporates Google Analytics, you will need to set your own AnalyticsIdentifier in
 the ABExample-Info.plist.
