@@ -38,8 +38,14 @@ events that have attendees, and are not all day events.
 
 In the ViewControllers directory there are two Models that control all the SQL statements into the Contacts.db
 using the SQLDataAccess class.
+
 ContactModel - Writes and reads the users Contacts from the Contacts.db.
+The ContactModel : getUserContactsFromAddressBook shows you how to write SQL Transactions for performance.
+An SQL Transaction is just many SQL queries added to an NSMutableArray, in this case contactsTransaction,
+and then executed with SQLDataAccess : ExecuteTransaction : contactsTransaction.
+
 CalendarModel - Writes and reads the users Calendar from the Contacts.db.
+
 These models show you how to write your SQL queries using SQLDataAccess.
 SQLDataAccess makes writing SQL statements super simple, and if you made a mistake in your SQL query it will print
 out an error message giving you the SQLite error message.
